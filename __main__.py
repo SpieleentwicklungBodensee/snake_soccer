@@ -76,7 +76,6 @@ level = ['########################################',
 tiles = {'#': pygame.image.load('gfx/wall.png'),
          'H': pygame.image.load("gfx/worm_head.png"),
          'B': pygame.image.load("gfx/worm_body.png"),
-         "T": pygame.image.load("gfx/worm_end.png")
          }
 
 
@@ -221,4 +220,3 @@ while running:
 
 if net is not None:
     net.stop()
-
