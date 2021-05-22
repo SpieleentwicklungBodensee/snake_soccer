@@ -73,7 +73,13 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
          '22': pygame.image.load('gfx/player2-walk2.png'),
          '30': pygame.image.load('gfx/player3.png'),
          '31': pygame.image.load('gfx/player3-walk1.png'),
-         '32': pygame.image.load('gfx/player3-walk2.png')
+         '32': pygame.image.load('gfx/player3-walk2.png'),
+         '40': pygame.image.load('gfx/player4.png'),
+         '41': pygame.image.load('gfx/player4-walk1.png'),
+         '42': pygame.image.load('gfx/player4-walk2.png'),
+         '50': pygame.image.load('gfx/player5.png'),
+         '51': pygame.image.load('gfx/player5-walk1.png'),
+         '52': pygame.image.load('gfx/player5-walk2.png'),
          }
 
 

@@ -7,7 +7,7 @@ class Player(GameObject):
     def __init__(self, x, y, playerid):
         GameObject.__init__(self, x, y)
         self.playerid = playerid
-        self.playertile = playerid % 3 + 1
+        self.playertile = playerid % 5 + 1
         self.tile = str(self.playertile)
         self.tick = 0
         self.anim = 0
