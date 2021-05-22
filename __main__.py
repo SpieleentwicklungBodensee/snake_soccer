@@ -26,6 +26,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--connect')
 parser.add_argument('--port', type=int, default=2000)
 parser.add_argument('--host', action='store_true')
+parser.add_argument('--level', type=str, default='LEV1')
 args = parser.parse_args()
 
 net = None
@@ -76,35 +77,9 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
          }
 
 
-gamestate = GameState()
+gamestate = GameState(args.level)
 
-level = ['########################################',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                               ###    #',
-         '#                                 #    #',
-         '#                                 #    #',
-         '#                                 #    #',
-         '#                                 #    #',
-         '#                               ###    #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '########################################',
-         ]
-
-gamestate.level = level
-
-worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2))
+worm   = Worm(math.floor(LEV_W/2),math.floor(LEV_H/2))
 ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),'o')
 
 gamestate.objects[0] = worm
@@ -208,7 +183,7 @@ def render():
     # render level
     for y in range(LEV_H):
         for x in range(LEV_W):
-            if level[y][x] == '#':
+            if gamestate.getLevel()[y][x] == '#':
                 screen.blit(tiles['#'], (x * TILE_W, y * TILE_H))
 
     # render players
