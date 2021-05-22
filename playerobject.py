@@ -1,6 +1,8 @@
 from globalconst import *
 from gameobjects import *
 
+from time import time
+
 class Player(GameObject):
     def __init__(self, x, y, playerid):
         GameObject.__init__(self, x, y)
@@ -11,7 +13,33 @@ class Player(GameObject):
         self.anim = 0
         self.is_walking = True
 
+        self.status = "ALIVE"
+        self.death_time    =0
+        self.time_to_alive = 2
+
+
+
+    def respawn(self):
+        self.x =TILE_W * 2
+        self.y =TILE_H * 2
+        self.status = "ALIVE"
+
+        self.tick = 0
+        self.anim = 0
+        self.is_walking=True
+
+    def get_eaten(self):
+        self.status = "DEAD"
+        self.death_time = time()
+
+
+
     def update(self, gamestate):
+
+        if self.status == "DEAD":
+            if self.death_time+ self.time_to_alive < time():
+                self.respawn()
+
         newxdir = self.xdir * self.speed
         newydir = self.ydir * self.speed
 
@@ -86,4 +114,8 @@ class Player(GameObject):
         self.y = newy
 
     def draw(self, screen, tiles):
-        screen.blit(tiles[self.tile + str(self.anim)], (self.x, self.y-TILE_H))
+
+        if self.status == "DEAD":
+            return
+
+        screen.blit(tiles[self.tile + str(self.anim)], (self.x, self.y - TILE_H))
