@@ -44,7 +44,6 @@ pygame.mouse.set_visible(False)
 
 font = BitmapFont('gfx/heimatfont.png', scr_w=SCR_W, scr_h=SCR_H, colors=[(255,255,255), (240,0,240)])
 
-
 level = ['########################################',
          '#                                      #',
          '#                                      #',
@@ -70,7 +69,9 @@ level = ['########################################',
          ]
 
 tiles = {'#': pygame.image.load('gfx/wall.png'),
-         }
+         '1': pygame.image.load('gfx/player1.png'),
+         '2': pygame.image.load('gfx/player2.png'),
+         '3': pygame.image.load('gfx/player3.png')}
 
 
 def toggleFullscreen():
