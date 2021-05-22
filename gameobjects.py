@@ -1,7 +1,7 @@
 from globalconst import *
 
 class GameObject(object):
-    def __init__(self, x, y):
+    def __init__(self, x, y, tile = None):
         self.x = x
         self.y = y
 
@@ -21,7 +21,7 @@ class GameObject(object):
         self.tile = None
 
     def getSprite(self):
-        return tiles[self.tile]
+        return self.tile
 
     def moveLeft(self):
         self.xdir = -1
