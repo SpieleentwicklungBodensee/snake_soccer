@@ -2,24 +2,8 @@ import pygame
 import io
 import os
 import random
-
+from globalconst import *
 from bitmapfont import BitmapFont
-
-
-SCR_W = 320
-SCR_H = 176
-
-WIN_W = 1280
-WIN_H = 720
-
-TILE_W = 16
-TILE_H = 16
-
-FPS = 60
-
-FULLSCREEN = False
-DEBUG_MODE = False
-JOY_DEADZONE = 0.4
 
 pygame.display.init()
 
@@ -50,88 +34,6 @@ def toggleFullscreen():
         window = pygame.display.set_mode(pygame.display.list_modes()[0], pygame.FULLSCREEN)
     else:
         window = pygame.display.set_mode((WIN_W, WIN_H), 0)
-
-
-class GameObject():
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        
-        self.xdir = 0
-        self.ydir = 0
-        self.facedir = LEFT
-        
-        self.speed = 2
-        self.gravity = 2
-        
-        self.jump = False
-        self.jumpBlocked = False
-
-        self.width = TILE_W
-        self.height = TILE_H
-        
-        self.tile = None
-        
-    def getSprite(self):
-        return tiles[self.tile]
-        
-    def moveLeft(self):
-        self.xdir = -1
-        
-    def moveRight(self):
-        self.xdir = 1
-        
-    def moveUp(self):
-        self.ydir = -1
-        
-    def moveDown(self):
-        self.ydir = 1
-        
-    def doJump(self):
-        if not self.jumpBlocked:# and not self.climb:
-            self.ydir = -4
-            self.jumpBlocked = True
-            self.jump = True
-            
-            sfx['jump'].play()
-        
-    def stopLeft(self):
-        if self.xdir < 0:
-            self.xdir = 0
-        
-    def stopRight(self):
-        if self.xdir > 0:
-            self.xdir = 0
-        
-    def stopUp(self):
-        if self.ydir < 0:
-            self.ydir = 0
-        
-    def stopDown(self):
-        if self.ydir > 0:
-            self.ydir = 0
-        
-    def cancelJump(self):
-        pass
-        
-    def update(self):
-        pass
-
-    def interact(self):
-        pass
-
-    def collides(self,game_object):
-        if self.x < game_object.x + game_object.width and \
-            self.x + self.width > game_object.x and \
-            self.y < game_object.y + game_object.height and \
-            self.y + self.height > game_object.y:
-
-           debugList.append([self.x,self.y])
-           debugList.append([game_object.x,game_object.y])
-
-           return True
-        return False        
-
 
 def controls():
     for e in pygame.event.get():
@@ -219,18 +121,12 @@ def render():
 
 def update():
     pass
-    
-    
-def init():
-    pass
         
     
     
     
 tick = 0
 running = True
-
-init()
 
 while running:
     tick += 1
