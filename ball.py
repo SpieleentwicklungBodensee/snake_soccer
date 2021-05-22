@@ -127,9 +127,13 @@ class Ball(GameObject):
         if DEBUG_MODE:
             pygame.draw.rect(screen,(255,0,0),pygame.Rect(self.x,self.y,self.width,self.height))
 
-        ## height hint
-        #if self.z>self.WALL_HEIGHT:
-        #    pygame.draw.line(screen,(64,64,64),(self.x+self.width/2,self.y+self.height/2),(self.x+self.width/2,self.y+self.height/2-self.z))
+        # height hint
+        if self.z>self.WALL_HEIGHT:
+            x=round(self.x+self.width/2)-1
+            y=self.y+self.height/2
+            #pygame.draw.line(screen,(64,128,255),(x,y),(x,y-self.z))
+            pygame.draw.line(screen,(255,64,32),(x-2,y-self.WALL_HEIGHT),(x+2,y-self.WALL_HEIGHT))
+            pygame.draw.line(screen,(255,64,32),(x,y),(x,y-self.WALL_HEIGHT))
 
         # ball sprite
         screen.blit(tiles[self.tile],(self.x-1,self.y-3-self.z))
