@@ -197,9 +197,12 @@ def render():
     player.draw(screen, tiles)
 
 def update():
+    global worm, player
     worm.update()
     player.update()
-    pass
+
+    if net is not None:
+        worm, player = net.update((worm, player))
 
 
 
