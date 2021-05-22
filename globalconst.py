@@ -1,4 +1,3 @@
-
 SCR_W = 320
 SCR_H = 176
 
@@ -9,6 +8,11 @@ TILE_W = 16
 TILE_H = 16
 
 FPS = 60
+
+LEFT = 0
+RIGHT = 1
+UP = 2
+DOWN = 3
 
 FULLSCREEN = False
 DEBUG_MODE = False
