@@ -1,3 +1,4 @@
+import math
 import gameobjects
 from time import time
 from globalconst import *
@@ -40,8 +41,13 @@ class Worm(gameobjects.GameObject):
             [0,-1],
             [0,1],
         ]
-
         self._dir_ops=[2,1,4,3]
+
+
+        self.state ="ALIVE"  #possibl values here are  ALIVE,RESPAWNING
+
+        self.time_of_death   = 0
+        self.time_to_respawn = 1.5
 
 
     def getSprite(self,sprite,tiles):
@@ -49,7 +55,15 @@ class Worm(gameobjects.GameObject):
 
 
     def update(self):
-        self.debugList =[]
+        self.debugList = []
+
+        if self.state=="DEAD":
+            if self.time_of_death+self.time_to_respawn< time():
+                self._respawn()
+            else:
+                return False
+
+
 
         #when we should move
         if self.last_move_time +self.move_time< time() :
@@ -65,13 +79,19 @@ class Worm(gameobjects.GameObject):
                 #check future collision with self
                 if self._collides_body(rect((self.x +self.xdir)* self.width, (self.y+self.ydir )* self.height, self.width, self.height)) == True:
                     #print("Collided with self!!")
+                    self.state="DEAD"
+                    self.time_of_death = time()
                     return False
+
                     # here reset the worm parts
 
                 #if a map was given check collision with it
                 if level != None:
                     if level[self.y+self.ydir][self.x+self.xdir] != " " :
                         #print("Collided with a wall D:")
+                        self.state = "DEAD"
+                        self.time_of_death = time()
+
                         return False
 
 
@@ -103,7 +123,15 @@ class Worm(gameobjects.GameObject):
                 self.y += self.ydir
 
 
+    def _respawn(self):
+        self.head = [math.floor(len(level[0]) / 2), math.floor(len(level) / 2)]
+        self.x = self.head[0]
+        self.y = self.head[1]
 
+        self.body=[]
+
+        self.state="ALIVE"
+        self.facedir =LEFT
 
     def _gen_collide(self,obj_a,obj_b):
         if obj_a[0] < obj_b.x + obj_b.width and \
@@ -156,6 +184,10 @@ class Worm(gameobjects.GameObject):
     def draw(self,screen,tiles):
         #self.getSprite("H",tiles)
         #draw the head
+
+
+        if self.state== "DEAD":
+            return False
 
         screen.blit(tiles[self.tiles[0]], (self.head[0] * self.width, self.head[1] * self.height))
 
