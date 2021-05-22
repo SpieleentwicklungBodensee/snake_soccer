@@ -12,6 +12,8 @@ from worm import Worm
 from ball import Ball
 from playerobject import *
 
+from gamestate import GameState
+
 import network
 
 
@@ -74,12 +76,39 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
          }
 
 
+gamestate = GameState()
+
+level = ['########################################',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                               ###    #',
+         '#                                 #    #',
+         '#                                 #    #',
+         '#                                 #    #',
+         '#                                 #    #',
+         '#                               ###    #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '########################################',
+         ]
+
+gamestate.level = level
 
 worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2))
 ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),'o')
 
-objects[0] = worm
-objects[1] = ball
+gamestate.objects[0] = worm
+gamestate.objects[1] = ball
 
 
 def toggleFullscreen():
@@ -91,10 +120,10 @@ def toggleFullscreen():
         window = pygame.display.set_mode((WIN_W, WIN_H), 0)
 
 def createPlayer(objId):
-    global playerColor, objects
+    global playerColor, gamestate
     newPlayer = Player(TILE_W * 2, TILE_H * 2, playerColor)
     playerColor += 1
-    objects[objId] = newPlayer
+    gamestate.objects[objId] = newPlayer
     print('created player with id=', objId)
 
 def controls():
@@ -183,25 +212,25 @@ def render():
                 screen.blit(tiles['#'], (x * TILE_W, y * TILE_H))
 
     # render players
-    for obj in objects.values():
+    for obj in gamestate.objects.values():
         obj.draw(screen, tiles)
 
 def update():
-    global actions, objects, ownPlayer
+    global actions, gamestate, ownPlayer
 
-    for obj in objects.values():
+    for obj in gamestate.objects.values():
         obj.update()
 
     if net is not None:
-        objects, actions = net.update(objects, actions)
-        ownPlayer = objects.get(ownId)
+        gamestate, actions = net.update(gamestate, actions)
+        ownPlayer = gamestate.objects.get(ownId)
 
     for action, objId in actions:
         if action == 'create-player':
             createPlayer(objId)
             continue
 
-        obj = objects.get(objId)
+        obj = gamestate.objects.get(objId)
 
         if not obj:
             continue
