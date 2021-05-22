@@ -166,13 +166,18 @@ class Worm(gameobjects.GameObject):
 
 
     def moveLeft(self):
-        self.facedir =LEFT
+
+        if self.facedir != RIGHT:
+            self.facedir =LEFT
 
     def moveRight(self):
-        self.facedir =RIGHT
+        if self.facedir!=LEFT:
+            self.facedir =RIGHT
 
     def moveUp(self):
-        self.facedir = UP
+        if self.facedir!=DOWN:
+            self.facedir = UP
 
     def moveDown(self):
-        self.facedir = DOWN
+        if self.facedir!=UP:
+            self.facedir = DOWN
