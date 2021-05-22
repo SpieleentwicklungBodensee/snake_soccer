@@ -54,7 +54,7 @@ class Worm(gameobjects.GameObject):
         return tiles[sprite]
 
 
-    def update(self):
+    def update(self, gamestate):
         self.debugList = []
 
         if self.state=="DEAD":
@@ -85,15 +85,13 @@ class Worm(gameobjects.GameObject):
 
                     # here reset the worm parts
 
-                #if a map was given check collision with it
-                if level != None:
-                    if level[self.y+self.ydir][self.x+self.xdir] != " " :
-                        #print("Collided with a wall D:")
-                        self.state = "DEAD"
-                        self.time_of_death = time()
+                #check collision with map
+                if gamestate.getLevel()[self.y+self.ydir][self.x+self.xdir] != " " :
+                    #print("Collided with a wall D:")
+                    self.state = "DEAD"
+                    self.time_of_death = time()
 
-                        return False
-
+                    return False
 
 
                 #update all the bodys first
@@ -124,7 +122,7 @@ class Worm(gameobjects.GameObject):
 
 
     def _respawn(self):
-        self.head = [math.floor(len(level[0]) / 2), math.floor(len(level) / 2)]
+        self.head = [math.floor(LEV_W / 2), math.floor(LEV_H / 2)]
         self.x = self.head[0]
         self.y = self.head[1]
 
