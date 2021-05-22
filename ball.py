@@ -5,8 +5,9 @@ from gameobjects import *
 class Ball(GameObject):
 
     def __init__(self, x, y, tile):
-
         self.SPEED_DIV = 8*2
+        self.SPEED_COLLISION_MULT_GROUND = 80 # in %
+        self.WALL_HEIGHT = 12
         super(Ball, self).__init__(x, y, tile)
         #self.tile = tile
         self.width = 5
@@ -15,9 +16,22 @@ class Ball(GameObject):
         #self.y = y
         self.z = 0
         self.size = 8
-        self.xdir = 10
-        self.ydir = 10
-        self.zdir = 30
+        self.xdir = 20
+        self.ydir = 20
+        self.zdir = 31
+
+    def getLevelTile(self, gamestate, x, y): # private
+        tileX=round(x/TILE_W)
+        if tileX<0:
+            tileX=0
+        if tileX>LEV_W-1:
+            tileX=LEV_W-1
+        tileY=round(y/TILE_H)
+        if tileY<0:
+            tileY=0
+        if tileY>LEV_H-1:
+            tileY=LEV_H-1
+        return gamestate.getLevel()[tileY][tileX]
 
     def kick(self, xdir, ydir):
         if self.z < 8:
@@ -27,47 +41,69 @@ class Ball(GameObject):
 
     def update(self, gamestate):
 
-        # move x
-        self.x += self.xdir / self.SPEED_DIV
-
-        # collide x
-        hit = False
-        if self.x < 0:
-            self.x = 0
-            hit = True
-        if self.x > SCR_W - self.size:
-            self.x = SCR_W - self.size
-            hit = True
-
-        if hit:
-            self.xdir = -self.xdir
-
-        # move y
-        self.y += self.ydir / self.SPEED_DIV
-
-        # collide y
-        hit = False
-        if self.y < 0:
-            self.y = 0
-            hit = True
-        if self.y > SCR_H - self.size:
-            self.y = SCR_H - self.size
-            hit = True
-
-        if hit:
-            self.ydir = -self.ydir
-
         # move z
+        oldLevelTile=self.getLevelTile(gamestate,self.x,self.y)
         if self.z > 0:
             self.zdir -= 1
         self.z += self.zdir / self.SPEED_DIV
 
         # collide z
-        if self.z < 0:
-            self.z = 0
-            self.zdir = - self.zdir *2/3
-            self.xdir = self.xdir *2/3
-            self.ydir = self.ydir *2/3
+        if oldLevelTile==" ": # above grass
+            if self.z < 0:
+                self.z = 0
+                self.zdir = -self.zdir * self.SPEED_COLLISION_MULT_GROUND/100
+                self.xdir =  self.xdir * self.SPEED_COLLISION_MULT_GROUND/100
+                self.ydir =  self.ydir * self.SPEED_COLLISION_MULT_GROUND/100
+        else: # above wall
+            if self.z < self.WALL_HEIGHT:
+                self.z = self.WALL_HEIGHT
+                self.zdir = -self.zdir
+                self.xdir =  self.xdir
+                self.ydir =  self.ydir
+
+        # move x
+        oldLevelTile=self.getLevelTile(gamestate,self.x,self.y)
+        oldX = self.x
+        self.x += self.xdir / self.SPEED_DIV
+        levelTile=self.getLevelTile(gamestate,self.x,self.y)
+
+        # collide x
+        hit = False
+        if self.x < 0:
+            hit = True
+        if self.x > SCR_W - self.size:
+            hit = True
+        if levelTile!=" " and self.z<self.WALL_HEIGHT:
+            hit = True
+        if hit:
+            self.xdir = -self.xdir
+            self.x = oldX
+
+        # move y
+        oldLevelTile=self.getLevelTile(gamestate,self.x,self.y)
+        oldY = self.y
+        self.y += self.ydir / self.SPEED_DIV
+        levelTile=self.getLevelTile(gamestate,self.x,self.y)
+
+        # collide y
+        hit = False
+        if self.y < 0:
+            hit = True
+        if self.y > SCR_H - self.size:
+            hit = True
+        if levelTile!=" " and self.z<self.WALL_HEIGHT:
+            hit = True
+        if hit:
+            self.ydir = -self.ydir
+            self.y = oldY
+
+        # int attributes
+        #self.x = round( self.x )
+        #self.y = round( self.y )
+        #self.z = round( self.z )
+        #self.xdir = round( self.xdir )
+        #self.ydir = round( self.ydir )
+        #self.zdir = round( self.zdir )
 
     def draw(self,screen,tiles):
 
@@ -90,6 +126,10 @@ class Ball(GameObject):
         # bounding box at z=0
         if DEBUG_MODE:
             pygame.draw.rect(screen,(255,0,0),pygame.Rect(self.x,self.y,self.width,self.height))
+
+        ## height hint
+        #if self.z>self.WALL_HEIGHT:
+        #    pygame.draw.line(screen,(64,64,64),(self.x+self.width/2,self.y+self.height/2),(self.x+self.width/2,self.y+self.height/2-self.z))
 
         # ball sprite
         screen.blit(tiles[self.tile],(self.x-1,self.y-3-self.z))
