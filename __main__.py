@@ -9,6 +9,7 @@ from globalconst import *
 from gameobjects import *
 from bitmapfont import BitmapFont
 from worm import Worm
+from ball import Ball
 
 import network
 
@@ -80,6 +81,7 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
 
 
 worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2),TILE_W,TILE_H)
+ball   = Ball(SCR_W/4,SCR_H/2,TILE_W,TILE_H)
 
 def toggleFullscreen():
     global FULLSCREEN, window
@@ -189,8 +191,12 @@ def render():
     # render worm
     worm.draw(screen,tiles)
 
+    # render ball
+    ball.draw(screen,tiles)
+
 def update():
     worm.update()
+    ball.update()
     pass
 
 
