@@ -1,4 +1,5 @@
 import pygame
+import argparse
 import io
 import os
 import random
@@ -6,6 +7,19 @@ import random
 from globalconst import *
 from gameobjects import *
 from bitmapfont import BitmapFont
+
+import network
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--connect')
+parser.add_argument('--port', default=2000)
+parser.add_argument('--host', action='store_true')
+args = parser.parse_args()
+
+if args.connect is not None:
+    net = network.connect(args.connect, args.port)
+elif args.host:
+    net = network.serve(args.port)
 
 pygame.display.init()
 
