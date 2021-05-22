@@ -51,6 +51,10 @@ class Ball(GameObject):
         if oldLevelTile==" ": # above grass
             if self.z < 0:
                 self.z = 0
+                if self.zdir > -5:
+                    self.zdir = 0
+                    self.xdir = 0
+                    self.ydir = 0
                 self.zdir = -self.zdir * self.SPEED_COLLISION_MULT_GROUND/100
                 self.xdir =  self.xdir * self.SPEED_COLLISION_MULT_GROUND/100
                 self.ydir =  self.ydir * self.SPEED_COLLISION_MULT_GROUND/100
