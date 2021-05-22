@@ -10,10 +10,6 @@ class GameObject(object):
         self.facedir = LEFT
 
         self.speed = 2
-        self.gravity = 2
-
-        self.jump = False
-        self.jumpBlocked = False
 
         self.width = TILE_W
         self.height = TILE_H
@@ -35,13 +31,6 @@ class GameObject(object):
     def moveDown(self):
         self.ydir = 1
 
-    def doJump(self):
-        if not self.jumpBlocked:  # and not self.climb:
-            self.ydir = -4
-            self.jumpBlocked = True
-            self.jump = True
-
-            sfx['jump'].play()
 
     def stopLeft(self):
         if self.xdir < 0:
@@ -59,8 +48,6 @@ class GameObject(object):
         if self.ydir > 0:
             self.ydir = 0
 
-    def cancelJump(self):
-        pass
 
     def update(self):
         pass

@@ -2,10 +2,13 @@ import pygame
 import io
 import os
 import random
+import math
 
 from globalconst import *
 from gameobjects import *
 from bitmapfont import BitmapFont
+
+from worm import Worm
 
 pygame.display.init()
 
@@ -43,10 +46,15 @@ level = ['####################',
          '#                  #',
          '####################',
          ]
-         
+
 tiles = {'#': pygame.image.load('gfx/wall.png'),
+         'H': pygame.image.load("gfx/worm_head.png"),
+         'B': pygame.image.load("gfx/worm_body.png"),
+         "T": pygame.image.load("gfx/worm_end.png")
          }
 
+
+worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2),TILE_W,TILE_H)
 
 def toggleFullscreen():
     global FULLSCREEN, window
@@ -67,12 +75,16 @@ def controls():
 
             if e.key == pygame.K_LEFT:
                 player.moveLeft()
+                worm.moveLeft()
             if e.key == pygame.K_RIGHT:
                 player.moveRight()
+                worm.moveRight()
             if e.key == pygame.K_UP:
                 player.moveUp()
+                worm.moveUp()
             if e.key == pygame.K_DOWN:
                 player.moveDown()
+                worm.moveDown()
 
             if e.key == pygame.K_RETURN:
                 mods = pygame.key.get_mods()
@@ -82,12 +94,16 @@ def controls():
         if e.type == pygame.KEYUP:
             if e.key == pygame.K_LEFT:
                 player.stopLeft()
+                worm.stopLeft()
             if e.key == pygame.K_RIGHT:
                 player.stopRight()
+                worm.stopRight()
             if e.key == pygame.K_UP:
                 player.stopUp()
+                worm.stopUp()
             if e.key == pygame.K_DOWN:
                 player.stopDown()
+                worm.stopDown()
 
             if e.key == pygame.K_F11:
                 global FPS
@@ -145,8 +161,11 @@ def render():
             if level[y][x] == '#':
                 screen.blit(tiles['#'], (x * TILE_W, y * TILE_H))
 
+    # render worm
+    worm.draw(screen,tiles)
 
 def update():
+    worm.update()
     pass
 
 
@@ -171,5 +190,3 @@ while running:
     update()
 
     clock.tick(FPS)
-
-
