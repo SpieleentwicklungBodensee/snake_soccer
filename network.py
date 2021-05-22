@@ -61,7 +61,7 @@ class Network:
 
     def stop(self):
         self.shutdown = True
-        self.s.shutdown(socket.SHUT_RD)
+        self.s.shutdown(socket.SHUT_WR)
         self.thread.join()
 
     def update(self):
