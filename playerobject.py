@@ -12,7 +12,6 @@ class Player(GameObject):
         self.is_walking = True
 
     def update(self):
-
         newxdir = self.xdir * self.speed
         newydir = self.ydir * self.speed
 
