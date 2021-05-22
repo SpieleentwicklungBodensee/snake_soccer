@@ -2,10 +2,14 @@ import pygame
 import io
 import os
 import random
+
 from globalconst import *
+from gameobjects import *
 from bitmapfont import BitmapFont
 
 pygame.display.init()
+
+player = GameObject(0,0)
 
 if FULLSCREEN:
     window = pygame.display.set_mode(pygame.display.list_modes()[0], pygame.FULLSCREEN)
