@@ -44,6 +44,7 @@ class Network:
         self.shutdown = False
 
         self.s.setblocking(0)
+        self.s.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
 
         self.lock = threading.Lock()
         self.sendPacket = None
@@ -67,6 +68,7 @@ class Network:
             if self.s in readable:
                 c, addr = self.s.accept()
                 c.setblocking(0)
+                c.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
                 with self.lock:
                     self.clients[c] = PacketAssembler()
                 print('new client')
