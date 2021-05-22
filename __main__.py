@@ -18,7 +18,7 @@ import network
 
 
 ownId = 0    # 0 = worm, 1 = ball, rest = players
-playerColor = 1
+playerColor = 0
 actions = []
 objects = {}
 
@@ -62,6 +62,7 @@ font = BitmapFont('gfx/heimatfont.png', scr_w=SCR_W, scr_h=SCR_H, colors=[(255,2
 
 
 tiles = {'#': pygame.image.load('gfx/wall.png'),
+         '.': pygame.image.load('gfx/goal.png'),
          'H': pygame.image.load("gfx/worm_head.png"),
          'B': pygame.image.load("gfx/worm_body.png"),
          'o': pygame.image.load('gfx/ball.png'),
@@ -196,6 +197,8 @@ def render():
         for x in range(LEV_W):
             if gamestate.getLevel()[y][x] == '#':
                 screen.blit(tiles['#'], (x * TILE_W, y * TILE_H))
+            elif gamestate.getLevel()[y][x] == '.':
+                screen.blit(tiles['.'], (x * TILE_W, y * TILE_H))
 
     # render players
     for obj in gamestate.objects.values():
