@@ -18,7 +18,7 @@ import network
 
 
 ownId = 0    # 0 = worm, 1 = ball, rest = players
-playerColor = 1
+playerColor = 0
 actions = []
 objects = {}
 
