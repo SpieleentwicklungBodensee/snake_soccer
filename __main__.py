@@ -84,13 +84,14 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
          'B': pygame.image.load("gfx/worm_body.png"),
          '1': pygame.image.load('gfx/player1.png'),
          '2': pygame.image.load('gfx/player2.png'),
-         '3': pygame.image.load('gfx/player3.png')
+         '3': pygame.image.load('gfx/player3.png'),
+         'o': pygame.image.load('gfx/ball.png')
          }
 
 
 
 worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2),TILE_W,TILE_H)
-ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),TILE_W,TILE_H)
+ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),'o')
 player = Player(4, 4, '1')
 
 players = [worm, player]
