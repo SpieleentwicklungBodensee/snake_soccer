@@ -207,23 +207,27 @@ def update():
 tick = 0
 running = True
 
-while running:
-    tick += 1
+try:
+    while running:
+        tick += 1
 
-    render()
+        render()
 
-    pygame.transform.scale(screen, window.get_size(), window)
-    pygame.display.flip()
+        pygame.transform.scale(screen, window.get_size(), window)
+        pygame.display.flip()
 
-    cont = controls()
+        cont = controls()
 
-    if not cont:
-        running = False
+        if not cont:
+            running = False
 
-    update()
-
-    clock.tick(FPS)
+        update()
 
 
-if net is not None:
-    net.stop()
+        clock.tick(FPS)
+
+finally:
+    if net is not None:
+        net.stop()
+
+    pygame.quit()
