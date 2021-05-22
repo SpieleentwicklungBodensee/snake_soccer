@@ -19,6 +19,12 @@ class Ball(GameObject):
         self.ydir = 10
         self.zdir = 30
 
+    def kick(self, xdir, ydir):
+        if self.z < 8:
+            self.xdir = xdir * 5
+            self.ydir = ydir * 5
+            self.zdir = 20
+
     def update(self, gamestate):
 
         # move x

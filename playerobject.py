@@ -33,6 +33,12 @@ class Player(GameObject):
         self.death_time = time()
 
 
+    def interact(self, gamestate):
+        ball = gamestate.objects[1]
+
+        if self.collides(ball):
+            ball.kick(ball.x - self.x, ball.y - self.y)
+
 
     def update(self, gamestate):
 
@@ -63,6 +69,7 @@ class Player(GameObject):
             if colltile2 != " " or colltile4 != " ":
                 newxdir = 0
 
+
         newx = self.x
         newy = self.y + newydir
 
@@ -83,6 +90,12 @@ class Player(GameObject):
         elif self.ydir > 0:
             if colltile3 != " " or colltile4 != " ":
                 newydir = 0
+
+
+        if gamestate.objects[0]._collides_body(self):
+            newxdir = 0
+            newydir = 0
+
 
         newx = self.x + newxdir
         newy = self.y + newydir

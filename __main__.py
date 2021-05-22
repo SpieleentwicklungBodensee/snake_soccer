@@ -119,6 +119,9 @@ def controls():
             if e.key == pygame.K_DOWN:
                 actions.append(('move-down', ownId))
 
+            if e.key == pygame.K_LCTRL:
+                actions.append(('fire', ownId))
+
             if e.key == pygame.K_RETURN:
                 mods = pygame.key.get_mods()
                 if mods & pygame.KMOD_LALT or mods & pygame.KMOD_RALT:
@@ -227,6 +230,8 @@ def update():
             obj.stopUp()
         elif action == 'stop-down':
             obj.stopDown()
+        elif action == 'fire':
+            obj.interact(gamestate)
 
     actions = []
 
