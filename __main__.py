@@ -193,8 +193,13 @@ def render():
         p.draw(screen, tiles)
 
 def update():
+    global players
     for p in players:
         p.update()
+
+    if net is not None:
+        players = net.update(players)
+        ownPlayer = players[playerId]
 
 
 tick = 0
