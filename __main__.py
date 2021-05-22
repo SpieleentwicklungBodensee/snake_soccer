@@ -12,10 +12,11 @@ import network
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--connect')
-parser.add_argument('--port', default=2000)
+parser.add_argument('--port', type=int, default=2000)
 parser.add_argument('--host', action='store_true')
 args = parser.parse_args()
 
+net = None
 if args.connect is not None:
     net = network.connect(args.connect, args.port)
 elif args.host:
@@ -198,3 +199,5 @@ while running:
     clock.tick(FPS)
 
 
+if net is not None:
+    net.stop()
