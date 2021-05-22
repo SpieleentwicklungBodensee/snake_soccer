@@ -14,21 +14,24 @@ from playerobject import *
 
 import network
 
-playerId = 0    # 0 = worm, other id = player
+
+ownId = 0    # 0 = worm, 1 = ball, rest = players
+playerColor = 1
+actions = []
+objects = {}
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--connect')
 parser.add_argument('--port', type=int, default=2000)
 parser.add_argument('--host', action='store_true')
-parser.add_argument('--id', type=int, default=0)    # only for testing
 args = parser.parse_args()
-
-playerId = args.id  # only for testing
 
 net = None
 if args.connect is not None:
     net = network.connect(args.connect, args.port)
-    playerId = 1    # TODO use id received from host
+    ownId = int(random.random() * 1000000) + 2       # 0 and 1 are reserved
+    actions.append(('create-player', ownId))
+    print('i am player with id=', ownId)
 elif args.host:
     net = network.serve(args.port)
 
@@ -97,12 +100,9 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
 
 worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2),TILE_W,TILE_H)
 ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),TILE_W,TILE_H)
-player = Player(12, 12, 1)
 
-players = [worm, player]
-ownPlayer = players[playerId]
-
-actions = []
+objects[0] = worm
+objects[1] = ball
 
 
 def toggleFullscreen():
@@ -112,6 +112,13 @@ def toggleFullscreen():
         window = pygame.display.set_mode(pygame.display.list_modes()[0], pygame.FULLSCREEN)
     else:
         window = pygame.display.set_mode((WIN_W, WIN_H), 0)
+
+def createPlayer(objId):
+    global playerColor, objects
+    newPlayer = Player(TILE_W * 2, TILE_H * 2, playerColor)
+    playerColor += 1
+    objects[objId] = newPlayer
+    print('created player with id=', objId)
 
 def controls():
     for e in pygame.event.get():
@@ -123,13 +130,13 @@ def controls():
                 return False
 
             if e.key == pygame.K_LEFT:
-                actions.append(('move-left', playerId))
+                actions.append(('move-left', ownId))
             if e.key == pygame.K_RIGHT:
-                actions.append(('move-right', playerId))
+                actions.append(('move-right', ownId))
             if e.key == pygame.K_UP:
-                actions.append(('move-up', playerId))
+                actions.append(('move-up', ownId))
             if e.key == pygame.K_DOWN:
-                actions.append(('move-down', playerId))
+                actions.append(('move-down', ownId))
 
             if e.key == pygame.K_RETURN:
                 mods = pygame.key.get_mods()
@@ -138,13 +145,13 @@ def controls():
 
         if e.type == pygame.KEYUP:
             if e.key == pygame.K_LEFT:
-                actions.append(('stop-left', playerId))
+                actions.append(('stop-left', ownId))
             if e.key == pygame.K_RIGHT:
-                actions.append(('stop-right', playerId))
+                actions.append(('stop-right', ownId))
             if e.key == pygame.K_UP:
-                actions.append(('stop-up', playerId))
+                actions.append(('stop-up', ownId))
             if e.key == pygame.K_DOWN:
-                actions.append(('stop-down', playerId))
+                actions.append(('stop-down', ownId))
 
             if e.key == pygame.K_F11:
                 global FPS
@@ -160,25 +167,25 @@ def controls():
         if e.type == pygame.JOYAXISMOTION:
             if e.axis == 0:
                 if e.value < -JOY_DEADZONE:
-                    actions.append(('move-left', playerId))
+                    actions.append(('move-left', ownId))
                 elif e.value > JOY_DEADZONE:
-                    actions.append(('move-right', playerId))
+                    actions.append(('move-right', ownId))
                 else:
                     if ownPlayer.xdir < 0:
-                        actions.append(('stop-left', playerId))
+                        actions.append(('stop-left', ownId))
                     if ownPlayer.xdir > 0:
-                        actions.append(('stop-right', playerId))
+                        actions.append(('stop-right', ownId))
 
             if e.axis == 1:
                 if e.value < -JOY_DEADZONE:
-                    actions.append(('move-up', playerId))
+                    actions.append(('move-up', ownId))
                 elif e.value > JOY_DEADZONE:
-                    actions.append(('move-down', playerId))
+                    actions.append(('move-down', ownId))
                 else:
                     if ownPlayer.ydir < 0:
-                        actions.append(('stop-up', playerId))
+                        actions.append(('stop-up', ownId))
                     if ownPlayer.ydir > 0:
-                        actions.append(('stop-down', playerId))
+                        actions.append(('stop-down', ownId))
 
         if e.type == pygame.JOYBUTTONDOWN:
             pass
@@ -199,25 +206,29 @@ def render():
                 screen.blit(tiles['#'], (x * TILE_W, y * TILE_H))
 
     # render players
-    for p in players:
-        p.draw(screen, tiles)
-
-    ball.draw(screen, tiles)
+    for obj in objects.values():
+        obj.draw(screen, tiles)
 
 def update():
-    global actions, players, ownPlayer
+    global actions, objects, ownPlayer
 
-    for p in players:
-        p.update()
-
-    ball.update()
+    for obj in objects.values():
+        obj.update()
 
     if net is not None:
-        players, actions = net.update(players, actions)
-        ownPlayer = players[playerId]
+        objects, actions = net.update(objects, actions)
+        ownPlayer = objects.get(ownId)
 
-    for action, oid in actions:
-        obj = players[oid]
+    for action, objId in actions:
+        if action == 'create-player':
+            createPlayer(objId)
+            continue
+
+        obj = objects.get(objId)
+
+        if not obj:
+            continue
+
         if action == 'move-left':
             obj.moveLeft()
         elif action == 'move-right':
@@ -235,6 +246,7 @@ def update():
         elif action == 'stop-down':
             obj.stopDown()
 
+    actions = []
 
 
 tick = 0
