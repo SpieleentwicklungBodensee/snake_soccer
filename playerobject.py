@@ -21,8 +21,8 @@ class Player(GameObject):
 
         if newy < 0:
             newy = 0
-        elif newy > SCR_H - TILE_H:
-            newy = SCR_W - TILE_H
+        elif newy > SCR_H - TILE_H*2:
+            newy = SCR_H - TILE_H*2
 
         self.x = newx
         self.y = newy
