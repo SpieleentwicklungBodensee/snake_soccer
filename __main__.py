@@ -51,7 +51,7 @@ def toggleFullscreen():
     else:
         window = pygame.display.set_mode((WIN_W, WIN_H), 0)
 
-
+# base entity
 class GameObject():
     def __init__(self, x, y):
         self.x = x
