@@ -133,7 +133,10 @@ class Network:
             with self.lock:
                 self.sendPacket = PacketAssembler.createPacket(gameState)
                 for c in self.clients:
-                    c.sendall(self.sendPacket)
+                    try:
+                        c.sendall(self.sendPacket)
+                    except BlockingIOError:
+                        pass
 
                 for a in self.clients.values():
                     while True:
