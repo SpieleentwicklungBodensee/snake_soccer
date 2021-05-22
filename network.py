@@ -73,9 +73,17 @@ class Network:
                 readable.remove(self.s)
 
             for c in readable:
-                data = c.recv(4096)
+                try:
+                    data = c.recv(4096)
+                except ConnectionResetError:
+                    print('drop client')
+                    with self.lock:
+                        del self.clients[c]
+                    continue
+
                 with self.lock:
                     if not data:
+                        print('disconnect client')
                         del self.clients[c]
                     else:
                         self.clients[c].push(data)
