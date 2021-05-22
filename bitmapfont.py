@@ -12,7 +12,7 @@ class BitmapFont(object):
 
         self.font_w = font_w
         self.font_h = font_h
-        
+
         self.scr_w = scr_w
         self.scr_h = scr_h
 
@@ -105,5 +105,3 @@ class BitmapFont(object):
             self.lastxpos += x
         if y is not None:
             self.lastypos += y
-
-
