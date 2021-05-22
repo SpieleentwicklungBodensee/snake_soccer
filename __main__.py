@@ -9,6 +9,7 @@ from globalconst import *
 from gameobjects import *
 from bitmapfont import BitmapFont
 from worm import Worm
+from ball import Ball
 from playerobject import *
 
 import network
@@ -89,6 +90,7 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
 
 
 worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2),TILE_W,TILE_H)
+ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),TILE_W,TILE_H)
 player = Player(4, 4, '1')
 
 players = [worm, player]
@@ -192,10 +194,14 @@ def render():
     for p in players:
         p.draw(screen, tiles)
 
+    ball.draw(screen, tiles)
+
 def update():
     global players
     for p in players:
         p.update()
+
+    ball.update()
 
     if net is not None:
         players = net.update(players)
