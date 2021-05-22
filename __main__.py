@@ -13,22 +13,26 @@ from playerobject import *
 
 import network
 
+playerId = 0    # 0 = worm, other id = player
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--connect')
 parser.add_argument('--port', type=int, default=2000)
 parser.add_argument('--host', action='store_true')
+parser.add_argument('--id', type=int, default=0)    # only for testing
 args = parser.parse_args()
+
+playerId = args.id  # only for testing
 
 net = None
 if args.connect is not None:
     net = network.connect(args.connect, args.port)
 elif args.host:
     net = network.serve(args.port)
+    playerId = 1    # TODO use id received from host
 
 
 pygame.display.init()
-
-
 
 if FULLSCREEN:
     window = pygame.display.set_mode(pygame.display.list_modes()[0], pygame.FULLSCREEN)
@@ -87,6 +91,10 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
 worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2),TILE_W,TILE_H)
 player = Player(4, 4, '1')
 
+players = [worm, player]
+ownPlayer = players[playerId]
+
+
 def toggleFullscreen():
     global FULLSCREEN, window
     FULLSCREEN = not FULLSCREEN
@@ -105,17 +113,13 @@ def controls():
                 return False
 
             if e.key == pygame.K_LEFT:
-                player.moveLeft()
-                worm.moveLeft()
+                ownPlayer.moveLeft()
             if e.key == pygame.K_RIGHT:
-                player.moveRight()
-                worm.moveRight()
+                ownPlayer.moveRight()
             if e.key == pygame.K_UP:
-                player.moveUp()
-                worm.moveUp()
+                ownPlayer.moveUp()
             if e.key == pygame.K_DOWN:
-                player.moveDown()
-                worm.moveDown()
+                ownPlayer.moveDown()
 
             if e.key == pygame.K_RETURN:
                 mods = pygame.key.get_mods()
@@ -124,17 +128,13 @@ def controls():
 
         if e.type == pygame.KEYUP:
             if e.key == pygame.K_LEFT:
-                player.stopLeft()
-                worm.stopLeft()
+                ownPlayer.stopLeft()
             if e.key == pygame.K_RIGHT:
-                player.stopRight()
-                worm.stopRight()
+                ownPlayer.stopRight()
             if e.key == pygame.K_UP:
-                player.stopUp()
-                worm.stopUp()
+                ownPlayer.stopUp()
             if e.key == pygame.K_DOWN:
-                player.stopDown()
-                worm.stopDown()
+                ownPlayer.stopDown()
 
             if e.key == pygame.K_F11:
                 global FPS
@@ -150,35 +150,31 @@ def controls():
         if e.type == pygame.JOYAXISMOTION:
             if e.axis == 0:
                 if e.value < -JOY_DEADZONE:
-                    player.moveLeft()
+                    ownPlayer.moveLeft()
                 elif e.value > JOY_DEADZONE:
-                    player.moveRight()
+                    ownPlayer.moveRight()
                 else:
-                    if player.xdir < 0:
-                        player.stopLeft()
-                    if player.xdir > 0:
-                        player.stopRight()
+                    if ownPlayer.xdir < 0:
+                        ownPlayer.stopLeft()
+                    if ownPlayer.xdir > 0:
+                        ownPlayer.stopRight()
 
             if e.axis == 1:
                 if e.value < -JOY_DEADZONE:
-                    player.moveUp()
+                    ownPlayer.moveUp()
                 elif e.value > JOY_DEADZONE:
-                    player.moveDown()
+                    ownPlayer.moveDown()
                 else:
-                    if player.ydir < 0:
-                        player.stopUp()
-                    if player.ydir > 0:
-                        player.stopDown()
+                    if ownPlayer.ydir < 0:
+                        ownPlayer.stopUp()
+                    if ownPlayer.ydir > 0:
+                        ownPlayer.stopDown()
 
         if e.type == pygame.JOYBUTTONDOWN:
-            if e.button == 1:
-                player.doJump()
-            elif e.button == 0:
-                player.interact()
+            pass
 
         if e.type == pygame.JOYBUTTONUP:
-            if e.button == 1:
-                player.cancelJump()
+            pass
 
     return True
 
@@ -192,16 +188,13 @@ def render():
             if level[y][x] == '#':
                 screen.blit(tiles['#'], (x * TILE_W, y * TILE_H))
 
-    # render worm
-    worm.draw(screen, tiles)
-    player.draw(screen, tiles)
+    # render players
+    for p in players:
+        p.draw(screen, tiles)
 
 def update():
-    worm.update()
-    player.update()
-    pass
-
-
+    for p in players:
+        p.update()
 
 
 tick = 0
