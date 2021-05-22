@@ -63,6 +63,7 @@ class Player(GameObject):
             if colltile2 != " " or colltile4 != " ":
                 newxdir = 0
 
+
         newx = self.x
         newy = self.y + newydir
 
@@ -83,6 +84,12 @@ class Player(GameObject):
         elif self.ydir > 0:
             if colltile3 != " " or colltile4 != " ":
                 newydir = 0
+
+
+        if gamestate.objects[0]._collides_body(self):
+            newxdir = 0
+            newydir = 0
+
 
         newx = self.x + newxdir
         newy = self.y + newydir

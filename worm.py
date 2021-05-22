@@ -83,6 +83,11 @@ class Worm(gameobjects.GameObject):
                     #print("Collided with self!!")
                     self.state="DEAD"
                     self.time_of_death = time()
+                    self.head=[-1,-1]
+                    self.y=-1
+                    self.x=-1
+
+                    self.body=[]
                     return False
 
                     # here reset the worm parts
@@ -93,6 +98,11 @@ class Worm(gameobjects.GameObject):
                     self.state = "DEAD"
                     self.time_of_death = time()
 
+                    self.head=[-1,-1]
+                    self.y=-1
+                    self.x=-1
+
+                    self.body=[]
                     return False
 
 
