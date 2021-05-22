@@ -193,8 +193,9 @@ def render():
 def update():
     global actions, gamestate, ownPlayer
 
-    for obj in gamestate.objects.values():
-        obj.update(gamestate)
+    if net is None or net.isHost():
+        for obj in gamestate.objects.values():
+            obj.update(gamestate)
 
     if net is not None:
         gamestate, actions = net.update(gamestate, actions)
