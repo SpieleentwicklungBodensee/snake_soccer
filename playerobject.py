@@ -11,7 +11,8 @@ class Player(GameObject):
         self.anim = 0
         self.is_walking = True
 
-    def update(self):
+    def update(self, gamestate):
+
         newxdir = self.xdir * self.speed
         newydir = self.ydir * self.speed
 
