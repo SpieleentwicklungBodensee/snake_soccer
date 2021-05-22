@@ -82,9 +82,15 @@ level = ['########################################',
 tiles = {'#': pygame.image.load('gfx/wall.png'),
          'H': pygame.image.load("gfx/worm_head.png"),
          'B': pygame.image.load("gfx/worm_body.png"),
-         '1': pygame.image.load('gfx/player1.png'),
-         '2': pygame.image.load('gfx/player2.png'),
-         '3': pygame.image.load('gfx/player3.png')
+         '10': pygame.image.load('gfx/player1.png'),
+         '11': pygame.image.load('gfx/player1-walk1.png'),
+         '12': pygame.image.load('gfx/player1-walk2.png'),
+         '20': pygame.image.load('gfx/player2.png'),
+         '21': pygame.image.load('gfx/player2-walk1.png'),
+         '22': pygame.image.load('gfx/player2-walk2.png'),
+         '30': pygame.image.load('gfx/player3.png'),
+         '31': pygame.image.load('gfx/player3-walk1.png'),
+         '32': pygame.image.load('gfx/player3-walk2.png')
          }
 
 

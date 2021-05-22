@@ -2,8 +2,11 @@ from globalconst import *
 from gameobjects import *
 
 class Player(GameObject):
-    def __init__(self, x, y, tile = None):
-        GameObject.__init__(self, x, y, tile)
+    def __init__(self, x, y, playerid):
+        GameObject.__init__(self, x, y)
+        self.playerid = playerid
+
+        self.tile = str(playerid)
 
     def update(self):
 
