@@ -9,6 +9,7 @@ from globalconst import *
 from gameobjects import *
 from bitmapfont import BitmapFont
 from worm import Worm
+from ball import Ball
 from playerobject import *
 
 import network
@@ -89,10 +90,13 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
 
 
 worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2),TILE_W,TILE_H)
+ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),TILE_W,TILE_H)
 player = Player(4, 4, '1')
 
 players = [worm, player]
 ownPlayer = players[playerId]
+
+actions = []
 
 
 def toggleFullscreen():
@@ -113,13 +117,13 @@ def controls():
                 return False
 
             if e.key == pygame.K_LEFT:
-                ownPlayer.moveLeft()
+                actions.append(('move-left', playerId))
             if e.key == pygame.K_RIGHT:
-                ownPlayer.moveRight()
+                actions.append(('move-right', playerId))
             if e.key == pygame.K_UP:
-                ownPlayer.moveUp()
+                actions.append(('move-up', playerId))
             if e.key == pygame.K_DOWN:
-                ownPlayer.moveDown()
+                actions.append(('move-down', playerId))
 
             if e.key == pygame.K_RETURN:
                 mods = pygame.key.get_mods()
@@ -128,13 +132,13 @@ def controls():
 
         if e.type == pygame.KEYUP:
             if e.key == pygame.K_LEFT:
-                ownPlayer.stopLeft()
+                actions.append(('stop-left', playerId))
             if e.key == pygame.K_RIGHT:
-                ownPlayer.stopRight()
+                actions.append(('stop-right', playerId))
             if e.key == pygame.K_UP:
-                ownPlayer.stopUp()
+                actions.append(('stop-up', playerId))
             if e.key == pygame.K_DOWN:
-                ownPlayer.stopDown()
+                actions.append(('stop-down', playerId))
 
             if e.key == pygame.K_F11:
                 global FPS
@@ -150,25 +154,25 @@ def controls():
         if e.type == pygame.JOYAXISMOTION:
             if e.axis == 0:
                 if e.value < -JOY_DEADZONE:
-                    ownPlayer.moveLeft()
+                    actions.append(('move-left', playerId))
                 elif e.value > JOY_DEADZONE:
-                    ownPlayer.moveRight()
+                    actions.append(('move-right', playerId))
                 else:
                     if ownPlayer.xdir < 0:
-                        ownPlayer.stopLeft()
+                        actions.append(('stop-left', playerId))
                     if ownPlayer.xdir > 0:
-                        ownPlayer.stopRight()
+                        actions.append(('stop-right', playerId))
 
             if e.axis == 1:
                 if e.value < -JOY_DEADZONE:
-                    ownPlayer.moveUp()
+                    actions.append(('move-up', playerId))
                 elif e.value > JOY_DEADZONE:
-                    ownPlayer.moveDown()
+                    actions.append(('move-down', playerId))
                 else:
                     if ownPlayer.ydir < 0:
-                        ownPlayer.stopUp()
+                        actions.append(('stop-up', playerId))
                     if ownPlayer.ydir > 0:
-                        ownPlayer.stopDown()
+                        actions.append(('stop-down', playerId))
 
         if e.type == pygame.JOYBUTTONDOWN:
             pass
@@ -192,10 +196,34 @@ def render():
     for p in players:
         p.draw(screen, tiles)
 
+    ball.draw(screen, tiles)
+
 def update():
-    global players
+    global actions, players, ownPlayer
+
+    for action, oid in actions:
+        obj = players[oid]
+        if action == 'move-left':
+            obj.moveLeft()
+        elif action == 'move-right':
+            obj.moveRight()
+        elif action == 'move-up':
+            obj.moveUp()
+        elif action == 'move-down':
+            obj.moveDown()
+        elif action == 'stop-left':
+            obj.stopLeft()
+        elif action == 'stop-right':
+            obj.stopRight()
+        elif action == 'stop-up':
+            obj.stopUp()
+        elif action == 'stop-down':
+            obj.stopDown()
+
     for p in players:
         p.update()
+
+    ball.update()
 
     if net is not None:
         players = net.update(players)
