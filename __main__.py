@@ -189,6 +189,8 @@ def render():
     screen.fill((0, 128, 0))
     font.drawText(screen, 'SNAKE SOCCER!', 2, 2, fgcolor=(255,255,255))#, bgcolor=(0,0,0))
 
+    font.drawText(screen, 'Pts: ' + str(gamestate.points), 31, 2, fgcolor=(255,255,255))
+
     # render level
     for y in range(LEV_H):
         for x in range(LEV_W):
