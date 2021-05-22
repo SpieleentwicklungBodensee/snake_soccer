@@ -54,7 +54,7 @@ class GameObject(object):
     def draw(self, screen, tiles):
         pass
 
-    def interact(self):
+    def interact(self, gamestate):
         pass
 
     def collides(self, game_object):

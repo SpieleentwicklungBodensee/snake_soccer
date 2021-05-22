@@ -3,6 +3,8 @@ import gameobjects
 from time import time
 from globalconst import *
 
+
+
 class rect():
     def __init__(self,x,y,width,height):
         self.x=x
@@ -81,6 +83,11 @@ class Worm(gameobjects.GameObject):
                     #print("Collided with self!!")
                     self.state="DEAD"
                     self.time_of_death = time()
+                    self.head=[-1,-1]
+                    self.y=-1
+                    self.x=-1
+
+                    self.body=[]
                     return False
 
                     # here reset the worm parts
@@ -91,6 +98,11 @@ class Worm(gameobjects.GameObject):
                     self.state = "DEAD"
                     self.time_of_death = time()
 
+                    self.head=[-1,-1]
+                    self.y=-1
+                    self.x=-1
+
+                    self.body=[]
                     return False
 
 
@@ -119,6 +131,12 @@ class Worm(gameobjects.GameObject):
 
                 self.x += self.xdir
                 self.y += self.ydir
+
+                for game_object_id in gamestate.objects:
+                    if type(gamestate.objects[game_object_id]) != Worm and type(gamestate.objects[game_object_id]).__name__ !="Ball":
+                        if self.collide_head(gamestate.objects[game_object_id]):
+                            print("collided with player ~")
+                            gamestate.objects[game_object_id].get_eaten()
 
 
     def _respawn(self):

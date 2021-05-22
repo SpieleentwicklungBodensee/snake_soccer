@@ -33,6 +33,12 @@ class Ball(GameObject):
             tileY=LEV_H-1
         return gamestate.getLevel()[tileY][tileX]
 
+    def kick(self, xdir, ydir):
+        if self.z < 8:
+            self.xdir = xdir * 5
+            self.ydir = ydir * 5
+            self.zdir = 20
+
     def update(self, gamestate):
 
         # move z
