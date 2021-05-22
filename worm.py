@@ -41,12 +41,14 @@ class Worm(gameobjects.GameObject):
             [0,1],
         ]
 
+        self._dir_ops=[2,1,4,3]
+
 
     def getSprite(self,sprite,tiles):
         return tiles[sprite]
 
 
-    def update(self,map=None):
+    def update(self):
         self.debugList =[]
 
         #when we should move
@@ -62,14 +64,14 @@ class Worm(gameobjects.GameObject):
 
                 #check future collision with self
                 if self._collides_body(rect((self.x +self.xdir)* self.width, (self.y+self.ydir )* self.height, self.width, self.height)) == True:
-                    print("Collided with self!!")
+                    #print("Collided with self!!")
                     return False
                     # here reset the worm parts
 
                 #if a map was given check collision with it
-                if map != None:
-                    if map[self.y+self.ydir][self.x+self.xdir] != " " :
-                        print("Collided with a wall D:")
+                if level != None:
+                    if level[self.y+self.ydir][self.x+self.xdir] != " " :
+                        #print("Collided with a wall D:")
                         return False
 
 
