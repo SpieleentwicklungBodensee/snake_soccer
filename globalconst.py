@@ -1,0 +1,15 @@
+
+SCR_W = 320
+SCR_H = 176
+
+WIN_W = 1280
+WIN_H = 720
+
+TILE_W = 16
+TILE_H = 16
+
+FPS = 60
+
+FULLSCREEN = False
+DEBUG_MODE = False
+JOY_DEADZONE = 0.4
