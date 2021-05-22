@@ -17,7 +17,7 @@ class Ball(GameObject):
 
         self.SPEED_DIV = 8
 
-    def update(self):
+    def update(self, gamestate):
 
         # move x
         self.x += self.xdir / self.SPEED_DIV
@@ -47,7 +47,7 @@ class Ball(GameObject):
         self.z += self.zdir / self.SPEED_DIV
         if self.z < 0:
             self.z = 0
-            self.zdir = - self.zdir 
+            self.zdir = - self.zdir
 
 
     def draw(self,screen,tiles):
