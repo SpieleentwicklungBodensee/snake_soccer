@@ -1,27 +1,59 @@
 import pygame
-import gameobjects
 from globalconst import *
-from time import time
+from gameobjects import *
 
-class Ball(gameobjects.GameObject):
-    def __init__(self,x,y,tile_w,tile_h):
-        super(Ball, self).__init__(x,y)
+class Ball(GameObject):
+    def __init__(self, x, y, tile = None):
+        super(Ball, self).__init__(x, y, tile)
         #self.x = x
         #self.y = y
+        self.z = 20
+        #self.tile = tile
 
-        self.xdir = 2
-        self.ydir = 2
-        
-        self.tile_w = tile_w
-        self.tile_h = tile_h
+        self.size = 8
+        self.xdir = 10
+        self.ydir = 10
+        self.zdir = 0
+
+        self.SPEED_DIV = 8
 
     def update(self):
-        self.x += self.xdir
-        if self.x<0 or self.x>SCR_W :
+
+        # move x
+        self.x += self.xdir / self.SPEED_DIV
+
+        # collide x
+        if self.x < 0:
+            self.x = 0
             self.xdir = -self.xdir
-        self.y += self.ydir
-        if self.y<0 or self.y>SCR_H :
+        if self.x > SCR_W - self.size:
+            self.x = SCR_W - self.size
+            self.xdir = -self.xdir
+
+        # move y
+        self.y += self.ydir / self.SPEED_DIV
+
+        # collide y
+        if self.y < 0:
+            self.y = 0
+            self.ydir = -self.ydir
+        if self.y > SCR_H - self.size:
+            self.y = SCR_H - self.size
             self.ydir = -self.ydir
 
+        # move z
+        if self.z > 0:
+            self.zdir -= 1
+        self.z += self.zdir / self.SPEED_DIV
+        if self.z < 0:
+            self.z = 0
+            self.zdir = - self.zdir 
+
+
     def draw(self,screen,tiles):
-        pygame.draw.rect(screen,(255,0,0),pygame.Rect(self.x-4,self.y-4,8,8))
+        # shadow
+        pygame.draw.rect(screen,(0,0,0),pygame.Rect(self.x,self.y,self.size,self.size))
+        # bounding box
+        pygame.draw.rect(screen,(255,0,0),pygame.Rect(self.x,self.y-self.z,self.size,self.size))
+        # sprite
+        screen.blit(tiles[self.tile],(self.x,self.y-self.z))
