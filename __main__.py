@@ -225,8 +225,6 @@ def init():
     pass
         
     
-    
-    
 tick = 0
 running = True
 
