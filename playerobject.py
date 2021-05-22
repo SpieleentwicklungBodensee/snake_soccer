@@ -4,6 +4,7 @@ from gameobjects import *
 class Player(GameObject):
     def __init__(self, x, y, tile = None):
         GameObject.__init__(self, x, y, tile)
+
     def update(self):
 
         newxdir = self.xdir * self.speed
@@ -25,3 +26,6 @@ class Player(GameObject):
 
         self.x = newx
         self.y = newy
+
+    def draw(self, screen, tiles):
+        screen.blit(tiles[self.tile], (self.x, self.y))

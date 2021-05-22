@@ -9,6 +9,7 @@ from globalconst import *
 from gameobjects import *
 from bitmapfont import BitmapFont
 from worm import Worm
+from playerobject import *
 
 import network
 
@@ -27,7 +28,7 @@ elif args.host:
 
 pygame.display.init()
 
-player = GameObject(0,0)
+
 
 if FULLSCREEN:
     window = pygame.display.set_mode(pygame.display.list_modes()[0], pygame.FULLSCREEN)
@@ -84,6 +85,7 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
 
 
 worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2),TILE_W,TILE_H)
+player = Player(4, 4, '1')
 
 def toggleFullscreen():
     global FULLSCREEN, window
@@ -191,10 +193,12 @@ def render():
                 screen.blit(tiles['#'], (x * TILE_W, y * TILE_H))
 
     # render worm
-    worm.draw(screen,tiles)
+    worm.draw(screen, tiles)
+    player.draw(screen, tiles)
 
 def update():
     worm.update()
+    player.update()
     pass
 
 
