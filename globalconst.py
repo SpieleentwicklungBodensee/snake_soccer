@@ -1,5 +1,5 @@
 SCR_W = 320
-SCR_H = 176
+SCR_H = 180
 
 WIN_W = 1280
 WIN_H = 720
