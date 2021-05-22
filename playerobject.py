@@ -33,6 +33,12 @@ class Player(GameObject):
         self.death_time = time()
 
 
+    def interact(self, gamestate):
+        ball = gamestate.objects[1]
+
+        if self.collides(ball):
+            ball.kick(ball.x - self.x, ball.y - self.y)
+
 
     def update(self, gamestate):
 
