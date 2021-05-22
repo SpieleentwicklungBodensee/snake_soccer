@@ -9,7 +9,7 @@ from globalconst import *
 from gameobjects import *
 from bitmapfont import BitmapFont
 from worm import Worm
-from playerobject import *
+from ball import Ball
 
 import network
 
@@ -22,13 +22,14 @@ args = parser.parse_args()
 net = None
 if args.connect is not None:
     net = network.connect(args.connect, args.port)
+    playerId = 1    # TODO use id received from host
 elif args.host:
     net = network.serve(args.port)
 
 
 pygame.display.init()
 
-
+player = GameObject(0,0)
 
 if FULLSCREEN:
     window = pygame.display.set_mode(pygame.display.list_modes()[0], pygame.FULLSCREEN)
@@ -77,15 +78,11 @@ level = ['########################################',
 tiles = {'#': pygame.image.load('gfx/wall.png'),
          'H': pygame.image.load("gfx/worm_head.png"),
          'B': pygame.image.load("gfx/worm_body.png"),
-         '1': pygame.image.load('gfx/player1.png'),
-         '2': pygame.image.load('gfx/player2.png'),
-         '3': pygame.image.load('gfx/player3.png')
          }
 
 
-
 worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2),TILE_W,TILE_H)
-player = Player(4, 4, '1')
+ball   = Ball(SCR_W/4,SCR_H/2,TILE_W,TILE_H)
 
 def toggleFullscreen():
     global FULLSCREEN, window
@@ -193,16 +190,15 @@ def render():
                 screen.blit(tiles['#'], (x * TILE_W, y * TILE_H))
 
     # render worm
-    worm.draw(screen, tiles)
-    player.draw(screen, tiles)
+    worm.draw(screen,tiles)
+
+    # render ball
+    ball.draw(screen,tiles)
 
 def update():
-    global worm, player
     worm.update()
-    player.update()
-
-    if net is not None:
-        worm, player = net.update((worm, player))
+    ball.update()
+    pass
 
 
 
@@ -210,27 +206,24 @@ def update():
 tick = 0
 running = True
 
-try:
-    while running:
-        tick += 1
+while running:
+    tick += 1
 
-        render()
+    render()
 
-        pygame.transform.scale(screen, window.get_size(), window)
-        pygame.display.flip()
+    pygame.transform.scale(screen, window.get_size(), window)
+    pygame.display.flip()
 
-        cont = controls()
+    cont = controls()
 
-        if not cont:
-            running = False
+    if not cont:
+        running = False
 
-        update()
+    update()
 
 
-        clock.tick(FPS)
+    clock.tick(FPS)
 
-finally:
-    if net is not None:
-        net.stop()
 
-    pygame.quit()
+if net is not None:
+    net.stop()
