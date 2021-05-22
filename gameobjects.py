@@ -10,7 +10,7 @@ class GameObject(object):
         self.ydir = 0
         self.facedir = LEFT
 
-        self.speed = 2
+        self.speed = 1
 
         self.width = TILE_W
         self.height = TILE_H
