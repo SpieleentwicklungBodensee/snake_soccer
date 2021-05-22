@@ -8,6 +8,9 @@ WIN_H = 720
 TILE_W = 16
 TILE_H = 16
 
+LEV_W = 20
+LEV_H = 11
+
 FPS = 60
 
 FULLSCREEN = False
