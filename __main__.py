@@ -201,6 +201,15 @@ def render():
 def update():
     global actions, players, ownPlayer
 
+    for p in players:
+        p.update()
+
+    ball.update()
+
+    if net is not None:
+        players, actions = net.update(players, actions)
+        ownPlayer = players[playerId]
+
     for action, oid in actions:
         obj = players[oid]
         if action == 'move-left':
@@ -220,14 +229,6 @@ def update():
         elif action == 'stop-down':
             obj.stopDown()
 
-    for p in players:
-        p.update()
-
-    ball.update()
-
-    if net is not None:
-        players = net.update(players)
-        ownPlayer = players[playerId]
 
 
 tick = 0
