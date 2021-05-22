@@ -54,11 +54,15 @@ class Network:
                 return
 
             data = self.s.recv(4096)
+            if not data:
+                print('disconnected from server')
+                return
             print('recv:', data)
 
     def stop(self):
         self.shutdown = True
-        self.s.shutdown(socket.SHUT_RDWR)
+        self.s.shutdown(socket.SHUT_RD)
+        self.thread.join()
 
     def update(self):
         pass
