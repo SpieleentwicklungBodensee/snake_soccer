@@ -1,4 +1,5 @@
 import pygame
+import argparse
 import io
 import os
 import random
@@ -6,6 +7,19 @@ import random
 from globalconst import *
 from gameobjects import *
 from bitmapfont import BitmapFont
+
+import network
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--connect')
+parser.add_argument('--port', default=2000)
+parser.add_argument('--host', action='store_true')
+args = parser.parse_args()
+
+if args.connect is not None:
+    net = network.connect(args.connect, args.port)
+elif args.host:
+    net = network.serve(args.port)
 
 pygame.display.init()
 
@@ -31,17 +45,28 @@ pygame.mouse.set_visible(False)
 font = BitmapFont('gfx/heimatfont.png', scr_w=SCR_W, scr_h=SCR_H, colors=[(255,255,255), (240,0,240)])
 
 
-level = ['####################',
-         '#                  #',
-         '#                  #',
-         '#                  #',
-         '#              ##  #',
-         '#               #  #',
-         '#              ##  #',
-         '#                  #',
-         '#                  #',
-         '#                  #',
-         '####################',
+level = ['########################################',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                               ###    #',
+         '#                                 #    #',
+         '#                                 #    #',
+         '#                                 #    #',
+         '#                                 #    #',
+         '#                               ###    #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '#                                      #',
+         '########################################',
          ]
 
 tiles = {'#': pygame.image.load('gfx/wall.png'),
@@ -137,7 +162,7 @@ def controls():
 
 def render():
     screen.fill((0, 128, 0))
-    font.drawText(screen, 'SNAKE SOCCER', 4, 4, fgcolor=(255,255,255))#, bgcolor=(0,0,0))
+    font.drawText(screen, 'SNAKE SOCCER!', 2, 2, fgcolor=(255,255,255))#, bgcolor=(0,0,0))
 
     # render level
     for y in range(LEV_H):
