@@ -13,11 +13,34 @@ def serve(port):
     s = socket.create_server(('', port), family=socket.AF_INET6, dualstack_ipv6=True)
     return Network(s, True)
 
+
+class PacketAssembler:
+    def __init__(self):
+        self.recvData = b''
+
+    def push(self, data):
+        self.recvData += data
+
+    def pull(self):
+        recvPacket = None
+        if len(self.recvData) >= 4:
+            length = struct.unpack_from('!I', self.recvData)[0]
+            if len(self.recvData) >= 4 + length:
+                recvPacket = self.recvData[4:4 + length]
+                self.recvData = self.recvData[4 + length:]
+                return pickle.loads(recvPacket)
+
+    @staticmethod
+    def createPacket(content):
+        data = pickle.dumps(content)
+        return struct.pack('!I', len(data)) + data
+
+
 class Network:
     def __init__(self, s, host = False):
         self.s = s
         self.host = host
-        self.clients = []
+        self.clients = {}
         self.shutdown = False
 
         self.s.setblocking(0)
@@ -25,6 +48,8 @@ class Network:
         self.lock = threading.Lock()
         self.sendPacket = None
         self.recvPacket = None
+        self.sendActions = []
+        self.recvActions = []
 
         if self.host:
             self.thread = threading.Thread(target = self.runServer)
@@ -34,7 +59,7 @@ class Network:
 
     def runServer(self):
         while True:
-            inputs = [self.s] + self.clients
+            inputs = [self.s] + list(self.clients)
             readable, writable, exceptional = select.select(inputs, [], inputs)
             if self.shutdown:
                 return
@@ -42,56 +67,81 @@ class Network:
             if self.s in readable:
                 c, addr = self.s.accept()
                 c.setblocking(0)
-                self.clients.append(c)
+                with self.lock:
+                    self.clients[c] = PacketAssembler()
                 print('new client')
                 readable.remove(self.s)
 
             for c in readable:
                 data = c.recv(4096)
-                print('recv:', data)
-                if not data:
-                    self.clients.remove(c)
+                with self.lock:
+                    if not data:
+                        del self.clients[c]
+                    else:
+                        self.clients[c].push(data)
 
     def runClient(self):
-        recvData = b''
+        a = PacketAssembler()
         while True:
             inputs = [self.s]
-            readable, writable, exceptional = select.select(inputs, [], inputs)
+            readable, writable, exceptional = select.select(inputs, [], inputs, 1/30)
             if self.shutdown:
                 return
 
-            data = self.s.recv(4096)
-            if not data:
-                print('disconnected from server')
-                return
+            if readable:
+                data = self.s.recv(4096)
+                if not data:
+                    print('disconnected from server')
+                    return
 
-            recvData += data
-            if len(recvData) >= 4:
-                length = struct.unpack_from('!I', recvData)[0]
-                if len(recvData) >= 4 + length:
-                    with self.lock:
-                        self.recvPacket = recvData[4:4 + length]
-                    recvData = recvData[4 + length:]
+                a.push(data)
+
+            while True:
+                packet = a.pull()
+                if packet is None:
+                    break
+
+                with self.lock:
+                    self.recvPacket = packet
+
+            with self.lock:
+                if self.sendActions:
+                    data = PacketAssembler.createPacket(self.sendActions)
+                    try:
+                        self.s.sendall(data)
+                        self.sendActions = []
+                    except BrokenPipeError:
+                        return
+                    except BlockingIOError:
+                        pass
 
     def stop(self):
         self.shutdown = True
         self.s.shutdown(socket.SHUT_RD)
         self.thread.join()
 
-    def update(self, gameState):
+    def update(self, gameState, actions):
         if self.host:
             with self.lock:
-                data = pickle.dumps(gameState)
-                self.sendPacket = struct.pack('!I', len(data)) + data
+                self.sendPacket = PacketAssembler.createPacket(gameState)
                 for c in self.clients:
                     c.sendall(self.sendPacket)
 
-            return gameState
+                for a in self.clients.values():
+                    while True:
+                        packet = a.pull()
+                        if packet is None:
+                            break
+
+                        actions += packet
+
+            return gameState, actions
         else:
             with self.lock:
+                self.sendActions += actions
                 if self.recvPacket is not None:
-                    return pickle.loads(self.recvPacket)
-            return gameState
+                    return self.recvPacket, []
+            return gameState, []
 
     def isHost(self):
         return self.host
