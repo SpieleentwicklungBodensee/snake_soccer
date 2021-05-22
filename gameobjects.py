@@ -4,6 +4,7 @@ class GameObject(object):
     def __init__(self, x, y, tile = None):
         self.x = x
         self.y = y
+        self.tile = tile
 
         self.xdir = 0
         self.ydir = 0
@@ -13,8 +14,6 @@ class GameObject(object):
 
         self.width = TILE_W
         self.height = TILE_H
-
-        self.tile = None
 
     def getSprite(self):
         return self.tile
@@ -50,6 +49,9 @@ class GameObject(object):
 
 
     def update(self):
+        pass
+
+    def draw(self, screen, tiles):
         pass
 
     def interact(self):

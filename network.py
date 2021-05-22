@@ -1,6 +1,8 @@
 import socket
 import select
 import threading
+import struct
+import pickle
 
 def connect(hostname, port):
     print('connect', hostname, port)
@@ -19,6 +21,10 @@ class Network:
         self.shutdown = False
 
         self.s.setblocking(0)
+
+        self.lock = threading.Lock()
+        self.sendPacket = None
+        self.recvPacket = None
 
         if self.host:
             self.thread = threading.Thread(target = self.runServer)
@@ -47,6 +53,7 @@ class Network:
                     self.clients.remove(c)
 
     def runClient(self):
+        recvData = b''
         while True:
             inputs = [self.s]
             readable, writable, exceptional = select.select(inputs, [], inputs)
@@ -57,15 +64,34 @@ class Network:
             if not data:
                 print('disconnected from server')
                 return
-            print('recv:', data)
+
+            recvData += data
+            if len(recvData) >= 4:
+                length = struct.unpack_from('!I', recvData)[0]
+                if len(recvData) >= 4 + length:
+                    with self.lock:
+                        self.recvPacket = recvData[4:4 + length]
+                    recvData = recvData[4 + length:]
 
     def stop(self):
         self.shutdown = True
-        self.s.shutdown(socket.SHUT_WR)
+        self.s.shutdown(socket.SHUT_RD)
         self.thread.join()
 
-    def update(self):
-        pass
+    def update(self, gameState):
+        if self.host:
+            with self.lock:
+                data = pickle.dumps(gameState)
+                self.sendPacket = struct.pack('!I', len(data)) + data
+                for c in self.clients:
+                    c.sendall(self.sendPacket)
+
+            return gameState
+        else:
+            with self.lock:
+                if self.recvPacket is not None:
+                    return pickle.loads(self.recvPacket)
+            return gameState
 
     def isHost(self):
         return self.host
