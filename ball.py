@@ -19,7 +19,7 @@ class Ball(GameObject):
         self.ydir = 10
         self.zdir = 30
 
-    def update(self):
+    def update(self, gamestate):
 
         # move x
         self.x += self.xdir / self.SPEED_DIV

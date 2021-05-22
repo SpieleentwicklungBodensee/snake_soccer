@@ -12,6 +12,8 @@ from worm import Worm
 from ball import Ball
 from playerobject import *
 
+from gamestate import GameState
+
 import network
 
 
@@ -24,6 +26,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--connect')
 parser.add_argument('--port', type=int, default=2000)
 parser.add_argument('--host', action='store_true')
+parser.add_argument('--level', type=str, default='LEV1')
 args = parser.parse_args()
 
 net = None
@@ -58,30 +61,6 @@ pygame.mouse.set_visible(False)
 font = BitmapFont('gfx/heimatfont.png', scr_w=SCR_W, scr_h=SCR_H, colors=[(255,255,255), (240,0,240)])
 
 
-level = ['########################################',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                               ###    #',
-         '#                                 #    #',
-         '#                                 #    #',
-         '#                                 #    #',
-         '#                                 #    #',
-         '#                               ###    #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '########################################',
-         ]
-
 tiles = {'#': pygame.image.load('gfx/wall.png'),
          'H': pygame.image.load("gfx/worm_head.png"),
          'B': pygame.image.load("gfx/worm_body.png"),
@@ -98,12 +77,13 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
          }
 
 
+gamestate = GameState(args.level)
 
-worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2))
+worm   = Worm(math.floor(LEV_W/2),math.floor(LEV_H/2))
 ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),'o')
 
-objects[0] = worm
-objects[1] = ball
+gamestate.objects[0] = worm
+gamestate.objects[1] = ball
 
 
 def toggleFullscreen():
@@ -115,10 +95,10 @@ def toggleFullscreen():
         window = pygame.display.set_mode((WIN_W, WIN_H), 0)
 
 def createPlayer(objId):
-    global playerColor, objects
+    global playerColor, gamestate
     newPlayer = Player(TILE_W * 2, TILE_H * 2, playerColor)
     playerColor += 1
-    objects[objId] = newPlayer
+    gamestate.objects[objId] = newPlayer
     print('created player with id=', objId)
 
 def controls():
@@ -203,29 +183,29 @@ def render():
     # render level
     for y in range(LEV_H):
         for x in range(LEV_W):
-            if level[y][x] == '#':
+            if gamestate.getLevel()[y][x] == '#':
                 screen.blit(tiles['#'], (x * TILE_W, y * TILE_H))
 
     # render players
-    for obj in objects.values():
+    for obj in gamestate.objects.values():
         obj.draw(screen, tiles)
 
 def update():
-    global actions, objects, ownPlayer
+    global actions, gamestate, ownPlayer
 
-    for obj in objects.values():
-        obj.update()
+    for obj in gamestate.objects.values():
+        obj.update(gamestate)
 
     if net is not None:
-        objects, actions = net.update(objects, actions)
-        ownPlayer = objects.get(ownId)
+        gamestate, actions = net.update(gamestate, actions)
+        ownPlayer = gamestate.objects.get(ownId)
 
     for action, objId in actions:
         if action == 'create-player':
             createPlayer(objId)
             continue
 
-        obj = objects.get(objId)
+        obj = gamestate.objects.get(objId)
 
         if not obj:
             continue

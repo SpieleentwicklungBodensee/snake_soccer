@@ -48,7 +48,7 @@ class GameObject(object):
             self.ydir = 0
 
 
-    def update(self):
+    def update(self, gamestate):
         pass
 
     def draw(self, screen, tiles):
