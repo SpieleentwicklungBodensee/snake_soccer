@@ -1,5 +1,6 @@
 import gameobjects
 from time import time
+from globalconst import *
 
 class rect():
     def __init__(self,x,y,width,height):
@@ -28,19 +29,38 @@ class Worm(gameobjects.GameObject):
         self.steps_till_addition = 4
         self.step_counter = 0
 
+        self.move_dir=[0,0]
+
         self.debugList =[]
+
+
+        self._MOVEMENTS = [
+            [-1,0],
+            [1,0],
+            [0,-1],
+            [0,1],
+        ]
 
 
     def getSprite(self,sprite,tiles):
         return tiles[sprite]
 
+
     def update(self,map=None):
         self.debugList =[]
+
+        #when we should move
         if self.last_move_time +self.move_time< time() :
 
+            self.xdir = self._MOVEMENTS[self.facedir][0]
+            self.ydir = self._MOVEMENTS[self.facedir][1]
 
             #if we should move
-            if self.xdir != 0 or self.ydir!=0:
+
+            #did a dir change occure
+            if True:
+
+                #check future collision with self
                 if self._collides_body(rect((self.x +self.xdir)* self.width, (self.y+self.ydir )* self.height, self.width, self.height)) == True:
                     print("Collided with self!!")
                     return False
@@ -79,6 +99,7 @@ class Worm(gameobjects.GameObject):
 
                 self.x += self.xdir
                 self.y += self.ydir
+
 
 
 
@@ -139,3 +160,17 @@ class Worm(gameobjects.GameObject):
         #draw the body
         for part in self.body:
             screen.blit(tiles["B"], (part[0] * self.width, part[1] * self.height))
+
+
+
+    def moveLeft(self):
+        self.facedir =LEFT
+
+    def moveRight(self):
+        self.facedir =RIGHT
+
+    def moveUp(self):
+        self.facedir = UP
+
+    def moveDown(self):
+        self.facedir = DOWN
