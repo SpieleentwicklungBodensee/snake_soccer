@@ -46,7 +46,46 @@ class Player(GameObject):
         newx = self.x + newxdir
         newy = self.y + newydir
 
-        self.is_walking = (self.xdir != 0) or (self.ydir != 0)
+        x1 = int(newx / TILE_W)
+        x2 = int((newx + TILE_W - 1) / TILE_W)
+        y1 = int(newy / TILE_H)
+        y2 = int((newy + TILE_H - 1) / TILE_H)
+
+        colltile1 = gamestate.getLevel()[y1][x1]  # upper left
+        colltile2 = gamestate.getLevel()[y1][x2]  # upper right
+        colltile3 = gamestate.getLevel()[y2][x1]  # lower left
+        colltile4 = gamestate.getLevel()[y2][x2]  # lower right
+
+        if self.xdir < 0:
+            if colltile1 != " " or colltile3 != " ":
+                newxdir = 0
+        elif self.xdir > 0:
+            if colltile2 != " " or colltile4 != " ":
+                newxdir = 0
+
+        newx = self.x
+        newy = self.y + newydir
+
+        x1 = int(newx / TILE_W)
+        x2 = int((newx + TILE_W - 1) / TILE_W)
+        y1 = int(newy / TILE_H)
+        y2 = int((newy + TILE_H - 1) / TILE_H)
+
+        colltile1 = gamestate.getLevel()[y1][x1]  # upper left
+        colltile2 = gamestate.getLevel()[y1][x2]  # upper right
+        colltile3 = gamestate.getLevel()[y2][x1]  # lower left
+        colltile4 = gamestate.getLevel()[y2][x2]  # lower right
+
+        if self.ydir < 0:
+            if colltile1 != " " or colltile2 != " ":
+                newydir = 0
+
+        elif self.ydir > 0:
+            if colltile3 != " " or colltile4 != " ":
+                newydir = 0
+
+        newx = self.x + newxdir
+        newy = self.y + newydir
 
         self.tick += 1
 
@@ -69,6 +108,8 @@ class Player(GameObject):
         elif newy > SCR_H - TILE_H*2:
             newy = SCR_H - TILE_H*2
 
+        self.is_walking = (self.xdir != 0) or (self.ydir != 0)
+
         self.x = newx
         self.y = newy
 
@@ -77,4 +118,4 @@ class Player(GameObject):
         if self.status == "DEAD":
             return
 
-        screen.blit(tiles[self.tile + str(self.anim)], (self.x, self.y- self.height))
+        screen.blit(tiles[self.tile + str(self.anim)], (self.x, self.y - TILE_H))
