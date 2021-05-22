@@ -1,7 +1,6 @@
 from globalconst import *
 
-# base entity for the game entities
-class GameObject():
+class GameObject(object):
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -74,8 +73,8 @@ class GameObject():
                 self.x + self.width > game_object.x and \
                 self.y < game_object.y + game_object.height and \
                 self.y + self.height > game_object.y:
-            debugList.append([self.x, self.y])
-            debugList.append([game_object.x, game_object.y])
+            #debugList.append([self.x, self.y])
+            #debugList.append([game_object.x, game_object.y])
 
             return True
         return False
