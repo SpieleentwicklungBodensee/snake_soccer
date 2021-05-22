@@ -58,30 +58,6 @@ pygame.mouse.set_visible(False)
 font = BitmapFont('gfx/heimatfont.png', scr_w=SCR_W, scr_h=SCR_H, colors=[(255,255,255), (240,0,240)])
 
 
-level = ['########################################',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                               ###    #',
-         '#                                 #    #',
-         '#                                 #    #',
-         '#                                 #    #',
-         '#                                 #    #',
-         '#                               ###    #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '#                                      #',
-         '########################################',
-         ]
-
 tiles = {'#': pygame.image.load('gfx/wall.png'),
          'H': pygame.image.load("gfx/worm_head.png"),
          'B': pygame.image.load("gfx/worm_body.png"),
