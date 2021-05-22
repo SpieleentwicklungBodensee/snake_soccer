@@ -97,7 +97,7 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
 
 worm   = Worm(math.floor(len(level[0])/2),math.floor(len(level)/2),TILE_W,TILE_H)
 ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),TILE_W,TILE_H)
-player = Player(4, 4, '1')
+player = Player(12, 12, 1)
 
 players = [worm, player]
 ownPlayer = players[playerId]
