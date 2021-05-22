@@ -219,6 +219,10 @@ def render():
 
 def update():
     pass
+    
+    
+def init():
+    pass
         
     
     
