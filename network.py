@@ -28,7 +28,8 @@ class Network:
 
     def runServer(self):
         while True:
-            readable, writable, exceptional = select.select([self.s] + self.clients, [], [])
+            inputs = [self.s] + self.clients
+            readable, writable, exceptional = select.select(inputs, [], inputs)
             if self.shutdown:
                 return
 
@@ -47,7 +48,8 @@ class Network:
 
     def runClient(self):
         while True:
-            readable, writable, exceptional = select.select([self.s], [], [])
+            inputs = [self.s]
+            readable, writable, exceptional = select.select(inputs, [], inputs)
             if self.shutdown:
                 return
 
