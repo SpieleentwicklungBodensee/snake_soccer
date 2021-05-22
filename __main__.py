@@ -27,9 +27,9 @@ playerId = args.id  # only for testing
 net = None
 if args.connect is not None:
     net = network.connect(args.connect, args.port)
+    playerId = 1    # TODO use id received from host
 elif args.host:
     net = network.serve(args.port)
-    playerId = 1    # TODO use id received from host
 
 
 pygame.display.init()
