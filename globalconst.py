@@ -4,11 +4,11 @@ SCR_H = 180
 WIN_W = 1280
 WIN_H = 720
 
-TILE_W = 16
-TILE_H = 16
+TILE_W = 8
+TILE_H = 8
 
-LEV_W = 20
-LEV_H = 11
+LEV_W = 40
+LEV_H = 22
 
 FPS = 60
 
