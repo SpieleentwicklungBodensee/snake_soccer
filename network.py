@@ -28,7 +28,8 @@ class Network:
 
     def runServer(self):
         while True:
-            readable, writable, exceptional = select.select([self.s] + self.clients, [], [])
+            inputs = [self.s] + self.clients
+            readable, writable, exceptional = select.select(inputs, [], inputs)
             if self.shutdown:
                 return
 
@@ -47,16 +48,21 @@ class Network:
 
     def runClient(self):
         while True:
-            readable, writable, exceptional = select.select([self.s], [], [])
+            inputs = [self.s]
+            readable, writable, exceptional = select.select(inputs, [], inputs)
             if self.shutdown:
                 return
 
             data = self.s.recv(4096)
+            if not data:
+                print('disconnected from server')
+                return
             print('recv:', data)
 
     def stop(self):
         self.shutdown = True
-        self.s.shutdown(socket.SHUT_RDWR)
+        self.s.shutdown(socket.SHUT_WR)
+        self.thread.join()
 
     def update(self):
         pass
