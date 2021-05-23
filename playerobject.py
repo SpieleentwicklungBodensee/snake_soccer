@@ -42,7 +42,7 @@ class Player(GameObject):
         playerCenterX = self.x + TILE_W/2
         playerCenterY = self.y + TILE_H
         diffX = ballCenterX - playerCenterX
-        diffY = ballCenterY - playerCenterY
+        diffY = ballCenterY - playerCenterY + 2
         distance = math.sqrt(pow(diffX, 2) + pow(diffY, 2))
         if distance < 16 and distance > 0:
             speed = 4
