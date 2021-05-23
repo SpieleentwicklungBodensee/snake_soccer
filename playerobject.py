@@ -44,8 +44,8 @@ class Player(GameObject):
         diffX = ballCenterX - playerCenterX
         diffY = ballCenterY - playerCenterY
         distance = math.sqrt(pow(diffX, 2) + pow(diffY, 2))
-        if distance < 20 and distance > 0:
-            speed = 6
+        if distance < 16 and distance > 0:
+            speed = 4
             diffX /= distance
             diffY /= distance
             ball.kick(diffX * speed, diffY * speed)
