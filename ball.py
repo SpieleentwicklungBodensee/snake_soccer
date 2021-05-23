@@ -2,6 +2,8 @@ import pygame
 from globalconst import *
 from gameobjects import *
 
+import sound
+
 class Ball(GameObject):
 
     def __init__(self, x, y, tile):
@@ -38,6 +40,8 @@ class Ball(GameObject):
             self.xdir = xdir * 5
             self.ydir = ydir * 5
             self.zdir = 20
+
+            sound.playSound('kick')
 
     def update(self, gamestate):
 

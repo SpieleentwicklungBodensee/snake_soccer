@@ -13,6 +13,7 @@ from ball import Ball
 from playerobject import *
 
 from gamestate import GameState
+import sound
 
 import network
 
@@ -82,6 +83,10 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
          '51': pygame.image.load('gfx/player5-walk1.png'),
          '52': pygame.image.load('gfx/player5-walk2.png'),
          }
+
+
+sound.loadSound('whistle', 'snd/trillerpfeife.wav')
+sound.loadSound('kick', 'snd/kick.wav')
 
 
 gamestate = GameState(args.level)
@@ -249,6 +254,8 @@ def update():
 
 tick = 0
 running = True
+
+sound.playSound('whistle')
 
 try:
     while running:
