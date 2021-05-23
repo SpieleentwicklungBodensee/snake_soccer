@@ -10,6 +10,7 @@ from gameobjects import *
 from bitmapfont import BitmapFont
 from worm import Worm
 from ball import Ball
+from bird import Bird
 from playerobject import *
 
 from gamestate import GameState
@@ -67,6 +68,7 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
          'H': pygame.image.load("gfx/worm_head.png"),
          'B': pygame.image.load("gfx/worm_body.png"),
          'o': pygame.image.load('gfx/ball.png'),
+         'v': pygame.image.load('gfx/bird.png'),
          '10': pygame.image.load('gfx/player1.png'),
          '11': pygame.image.load('gfx/player1-walk1.png'),
          '12': pygame.image.load('gfx/player1-walk2.png'),
@@ -93,9 +95,11 @@ gamestate = GameState(args.level)
 
 worm   = Worm(math.floor(LEV_W/2),math.floor(LEV_H/2))
 ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),'o')
+bird   = Bird(0,0,'v')
 
 gamestate.objects[-1] = worm
 gamestate.objects[-2] = ball
+gamestate.objects[-3] = bird
 
 
 def toggleFullscreen():

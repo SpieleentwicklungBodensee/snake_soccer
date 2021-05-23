@@ -23,38 +23,23 @@ class Bird(GameObject):
 
     def update(self, gamestate):
 
-        # move z
-        oldLevelTile=self.getLevelTile(gamestate,self.x,self.y)
-        if self.z > 0:
-            self.zdir -= 1
-        self.z += self.zdir / self.SPEED_DIV
-
-        # collide z
-        if oldLevelTile==" ": # above grass
-            if self.z < 0:
-                self.z = 0
-                self.zdir = -self.zdir * self.SPEED_COLLISION_MULT_GROUND/100
-                self.xdir =  self.xdir * self.SPEED_COLLISION_MULT_GROUND/100
-                self.ydir =  self.ydir * self.SPEED_COLLISION_MULT_GROUND/100
-        else: # above wall
-            if self.z < self.WALL_HEIGHT:
-                self.z = self.WALL_HEIGHT
-                self.zdir = -self.zdir
-                self.xdir =  self.xdir
-                self.ydir =  self.ydir
-
         # move x
-        oldLevelTile=self.getLevelTile(gamestate,self.x,self.y)
         oldX = self.x
         self.x += self.xdir / self.SPEED_DIV
-        levelTile=self.getLevelTile(gamestate,self.x,self.y)
+        # collide x
+        hit = False
+        if self.x < 0:
+            hit = True
+        if self.x > SCR_W - self.size:
+            hit = True
 
+        if hit:
+            self.xdir = -self.ydir
+            self.x = oldX
 
         # move y
-        oldLevelTile=self.getLevelTile(gamestate,self.x,self.y)
         oldY = self.y
         self.y += self.ydir / self.SPEED_DIV
-        levelTile=self.getLevelTile(gamestate,self.x,self.y)
 
         # collide y
         hit = False
@@ -62,8 +47,7 @@ class Bird(GameObject):
             hit = True
         if self.y > SCR_H - self.size:
             hit = True
-        if levelTile!=" " and self.z<self.WALL_HEIGHT:
-            hit = True
+
         if hit:
             self.ydir = -self.ydir
             self.y = oldY
@@ -75,6 +59,9 @@ class Bird(GameObject):
         #self.xdir = round( self.xdir )
         #self.ydir = round( self.ydir )
         #self.zdir = round( self.zdir )
+
+    def get_eaten(self):
+        pass
 
     def draw(self,screen,tiles):
 
