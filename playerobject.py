@@ -1,3 +1,4 @@
+import math
 from globalconst import *
 from gameobjects import *
 
@@ -36,8 +37,18 @@ class Player(GameObject):
     def interact(self, gamestate):
         ball = gamestate.objects[1]
 
-        if self.collides(ball):
-            ball.kick(ball.x - self.x, ball.y - self.y)
+        ballCenterX = ball.x + ball.width/2
+        ballCenterY = ball.y + ball.height/2
+        playerCenterX = self.x + TILE_W/2
+        playerCenterY = self.y + TILE_H
+        diffX = ballCenterX - playerCenterX
+        diffY = ballCenterY - playerCenterY + 2
+        distance = math.sqrt(pow(diffX, 2) + pow(diffY, 2))
+        if distance < 16 and distance > 0:
+            speed = 4
+            diffX /= distance
+            diffY /= distance
+            ball.kick(diffX * speed, diffY * speed)
 
 
     def update(self, gamestate):

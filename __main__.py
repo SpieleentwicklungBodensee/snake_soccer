@@ -13,12 +13,13 @@ from ball import Ball
 from playerobject import *
 
 from gamestate import GameState
+import sound
 
 import network
 
 
 ownId = 0    # 0 = worm, 1 = ball, rest = players
-playerColor = 1
+playerColor = 0
 actions = []
 objects = {}
 
@@ -62,6 +63,7 @@ font = BitmapFont('gfx/heimatfont.png', scr_w=SCR_W, scr_h=SCR_H, colors=[(255,2
 
 
 tiles = {'#': pygame.image.load('gfx/wall.png'),
+         '.': pygame.image.load('gfx/goal.png'),
          'H': pygame.image.load("gfx/worm_head.png"),
          'B': pygame.image.load("gfx/worm_body.png"),
          'o': pygame.image.load('gfx/ball.png'),
@@ -81,6 +83,10 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
          '51': pygame.image.load('gfx/player5-walk1.png'),
          '52': pygame.image.load('gfx/player5-walk2.png'),
          }
+
+
+sound.loadSound('whistle', 'snd/trillerpfeife.wav')
+sound.loadSound('kick', 'snd/kick.wav')
 
 
 gamestate = GameState(args.level)
@@ -189,11 +195,15 @@ def render():
     screen.fill((0, 128, 0))
     font.drawText(screen, 'SNAKE SOCCER!', 2, 2, fgcolor=(255,255,255))#, bgcolor=(0,0,0))
 
+    font.drawText(screen, 'Pts: ' + str(gamestate.points), 31, 2, fgcolor=(255,255,255))
+
     # render level
     for y in range(LEV_H):
         for x in range(LEV_W):
             if gamestate.getLevel()[y][x] == '#':
                 screen.blit(tiles['#'], (x * TILE_W, y * TILE_H))
+            elif gamestate.getLevel()[y][x] == '.':
+                screen.blit(tiles['.'], (x * TILE_W, y * TILE_H))
 
     # render players
     for obj in gamestate.objects.values():
@@ -244,6 +254,8 @@ def update():
 
 tick = 0
 running = True
+
+sound.playSound('whistle')
 
 try:
     while running:
