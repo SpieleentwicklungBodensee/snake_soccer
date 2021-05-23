@@ -35,7 +35,7 @@ class Player(GameObject):
 
 
     def interact(self, gamestate):
-        ball = gamestate.objects[1]
+        ball = gamestate.objects[-2]
 
         ballCenterX = ball.x + ball.width/2
         ballCenterY = ball.y + ball.height/2
@@ -103,7 +103,7 @@ class Player(GameObject):
                 newydir = 0
 
 
-        if gamestate.objects[0]._collides_body(self):
+        if gamestate.objects[-1]._collides_body(self):
             newxdir = 0
             newydir = 0
 

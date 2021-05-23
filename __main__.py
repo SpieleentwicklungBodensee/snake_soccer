@@ -18,7 +18,7 @@ import sound
 import network
 
 
-ownId = 0    # 0 = worm, 1 = ball, rest = players
+ownId = -1    # -1 = worm, -2 = ball, rest = players
 playerColor = 0
 actions = []
 objects = {}
@@ -33,7 +33,7 @@ args = parser.parse_args()
 net = None
 if args.connect is not None:
     net = network.connect(args.connect, args.port)
-    ownId = int(random.random() * 1000000) + 2       # 0 and 1 are reserved
+    ownId = int(random.random() * 1000000)
     actions.append(('create-player', ownId))
     print('i am player with id=', ownId)
 elif args.host:
@@ -94,8 +94,8 @@ gamestate = GameState(args.level)
 worm   = Worm(math.floor(LEV_W/2),math.floor(LEV_H/2))
 ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),'o')
 
-gamestate.objects[0] = worm
-gamestate.objects[1] = ball
+gamestate.objects[-1] = worm
+gamestate.objects[-2] = ball
 
 
 def toggleFullscreen():
