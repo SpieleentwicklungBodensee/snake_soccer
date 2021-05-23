@@ -26,10 +26,10 @@ class Worm(gameobjects.GameObject):
 
         #worm move timer
         self.last_move_time= 0
-        self.move_time     = 0.2
+        self.move_time     = 0.15
 
         #worm body addition timer
-        self.steps_till_addition = 4
+        self.steps_till_addition = 2
         self.step_counter = 0
 
         self.move_dir=[0,0]
