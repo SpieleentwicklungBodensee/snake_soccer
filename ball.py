@@ -7,7 +7,7 @@ import sound
 class Ball(GameObject):
 
     def __init__(self, x, y, tile):
-        self.SPEED_DIV = 8*2
+        self.SPEED_DIV = 8*4
         self.SPEED_COLLISION_MULT_GROUND = 80 # in %
         self.WALL_HEIGHT = 12
         super(Ball, self).__init__(x, y, tile)
