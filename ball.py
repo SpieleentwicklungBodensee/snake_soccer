@@ -7,9 +7,8 @@ import sound
 class Ball(GameObject):
 
     def __init__(self, x, y, tile):
-        self.SPEED_DIV = 8*3
-        self.SPEED_COLLISION_XY_MULT_GROUND = 80 # in %
-        self.SPEED_COLLISION_Z_MULT_GROUND  = 50 # in %
+        self.SPEED_DIV = 8*4
+        self.SPEED_COLLISION_MULT_GROUND = 80 # in %
         self.WALL_HEIGHT = 12
         super(Ball, self).__init__(x, y, tile)
         #self.tile = tile
@@ -56,15 +55,13 @@ class Ball(GameObject):
         if oldLevelTile==" ": # above grass
             if self.z < 0:
                 self.z = 0
-                if self.zdir > -2:
+                if self.zdir > -5:
                     self.zdir = 0
-                if abs(self.xdir) < 15:
                     self.xdir = 0
-                if abs(self.ydir) < 15:
                     self.ydir = 0
-                self.zdir = -self.zdir * self.SPEED_COLLISION_Z_MULT_GROUND/100
-                self.xdir =  self.xdir * self.SPEED_COLLISION_XY_MULT_GROUND/100
-                self.ydir =  self.ydir * self.SPEED_COLLISION_XY_MULT_GROUND/100
+                self.zdir = -self.zdir * self.SPEED_COLLISION_MULT_GROUND/100
+                self.xdir =  self.xdir * self.SPEED_COLLISION_MULT_GROUND/100
+                self.ydir =  self.ydir * self.SPEED_COLLISION_MULT_GROUND/100
         else: # above wall
             if self.z < self.WALL_HEIGHT:
                 self.z = self.WALL_HEIGHT
