@@ -12,20 +12,37 @@ BALL_SHADOW_COLOR=(0,96,0)
 
 class Ball(GameObject):
 
-    def __init__(self, x, y, tile):
-        super(Ball, self).__init__(x, y, tile)
+    def __init__(self, gamestate):
+        super(Ball, self).__init__(0, 0, 'o')
 
         #self.tile=tile # set by super()
         self.width=5    # to match sprite
         self.height=4   # to match sprite
 
-        #self.x=x       # set by super()
-        #self.y=y       # set by super()
-        self.z=40       # ground at 0, positive up
+        #self.x=0       # set by respawn()
+        #self.y=0       # set by respawn()
+        #self.z=0       # set by respawn(), ground at 0, positive up
+        #self.xdir=0    # set by respawn(), velocity in pixels per frame
+        #self.ydir=0    # set by respawn(), velocity in pixels per frame
+        #self.zdir=0    # set by respawn(), velocity in pixels per frame
+        self.respawn(gamestate)
 
-        self.xdir=0     # velocity in pixels per frame
-        self.ydir=0     # velocity in pixels per frame
-        self.zdir=0     # velocity in pixels per frame
+    def respawn(self, gamestate):
+
+        # default
+        self.x=math.floor(SCR_W/4)
+        self.y=math.floor(SCR_H/2)
+        self.z=8
+        self.xdir=0
+        self.ydir=0
+        self.zdir=0
+
+        # find and use first 'o' in level
+        for y in range(LEV_H):
+            for x in range(LEV_W):
+                if gamestate.getLevel()[y][x]=='o':
+                    self.x=x*8+2
+                    self.y=y*8+2
 
     def __getLevelTile(self, gamestate): # at current x y
 
@@ -62,10 +79,18 @@ class Ball(GameObject):
         levelTile=self.__getLevelTile(gamestate)
         if levelTile=="#":
             if self.z<BALL__WALL_HEIGHT:
+                # bounce off wall top
                 self.zdir=math.fabs(self.zdir) # don't lose velocity so ball wont stop on walls
                 self.z=oldZ
+        elif levelTile==".":
+            if self.z<BALL__WALL_HEIGHT:
+                # goal
+                gamestate.points+=1
+                self.respawn(gamestate)
+                playSound('whistle')
         else: # levelTile!="#"
             if self.z<0:
+                # bounce off ground
                 if self.zdir>-5: # snap to 0?
                     self.zdir=0
                     self.xdir=0

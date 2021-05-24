@@ -93,7 +93,7 @@ class Worm(gameobjects.GameObject):
                     # here reset the worm parts
 
                 #check collision with map
-                if gamestate.getLevel()[self.y+self.ydir][self.x+self.xdir] != " " :
+                if gamestate.getLevel()[self.y+self.ydir][self.x+self.xdir] == "#" :
                     #print("Collided with a wall D:")
                     self.state = "DEAD"
                     self.time_of_death = time()
