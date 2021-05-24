@@ -1,4 +1,5 @@
 import pygame
+import math
 
 from globalconst import *
 from gameobjects import *
@@ -53,32 +54,30 @@ class Ball(GameObject):
     def update(self, gamestate):
 
         # move z
-        oldLevelTile=self.__getLevelTile(gamestate)
-        if self.z>0:
-            self.zdir-=1
+        oldZ=self.z
+        self.zdir-=1 # gravity
         self.z+=self.zdir/BALL__SPEED_DIV
 
         # collide z
-        if oldLevelTile==" ": # above grass
+        levelTile=self.__getLevelTile(gamestate)
+        if levelTile=="#":
+            if self.z<BALL__WALL_HEIGHT:
+                self.zdir=math.fabs(self.zdir) # don't lose velocity so ball wont stop on walls
+                self.z=oldZ
+        else: # levelTile!="#"
             if self.z<0:
-                self.z=0
-                if self.zdir>-5:
+                if self.zdir>-5: # snap to 0?
                     self.zdir=0
                     self.xdir=0
                     self.ydir=0
-                self.zdir=-self.zdir * BALL__SPEED_COLLISION_MULT_GROUND/100
-                self.xdir= self.xdir * BALL__SPEED_COLLISION_MULT_GROUND/100
-                self.ydir= self.ydir * BALL__SPEED_COLLISION_MULT_GROUND/100
-        else: # above wall
-            if self.z<BALL__WALL_HEIGHT:
-                self.z=BALL__WALL_HEIGHT
-                self.zdir=-self.zdir
-                self.xdir= self.xdir
-                self.ydir= self.ydir
+                self.zdir=math.fabs(self.zdir * BALL__SPEED_COLLISION_MULT_GROUND/100)
+                self.xdir=          self.xdir * BALL__SPEED_COLLISION_MULT_GROUND/100
+                self.ydir=          self.ydir * BALL__SPEED_COLLISION_MULT_GROUND/100
+                self.z=oldZ
 
         # move x
-        oldLevelTile=self.__getLevelTile(gamestate)
         oldX=self.x
+        oldLevelTile=self.__getLevelTile(gamestate)
         self.x+=self.xdir/BALL__SPEED_DIV
         levelTile=self.__getLevelTile(gamestate)
 
@@ -88,15 +87,15 @@ class Ball(GameObject):
             hit=True
         if self.x>SCR_W:
             hit=True
-        if levelTile!=" " and self.z<BALL__WALL_HEIGHT:
+        if levelTile=="#" and self.z<BALL__WALL_HEIGHT:
             hit=True
         if hit:
             self.xdir=-self.xdir
             self.x=oldX
 
         # move y
-        oldLevelTile=self.__getLevelTile(gamestate)
         oldY=self.y
+        oldLevelTile=self.__getLevelTile(gamestate)
         self.y+=self.ydir/BALL__SPEED_DIV
         levelTile=self.__getLevelTile(gamestate)
 
@@ -106,7 +105,7 @@ class Ball(GameObject):
             hit=True
         if self.y>SCR_H:
             hit=True
-        if levelTile!=" " and self.z<BALL__WALL_HEIGHT:
+        if levelTile=="#" and self.z<BALL__WALL_HEIGHT:
             hit=True
         if hit:
             self.ydir=-self.ydir
