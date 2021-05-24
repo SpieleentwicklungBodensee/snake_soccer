@@ -74,10 +74,10 @@ class Player(GameObject):
         colltile4 = gamestate.getLevel()[y2][x2]  # lower right
 
         if self.xdir < 0:
-            if colltile1 != " " or colltile3 != " ":
+            if colltile1 == "#" or colltile3 == "#":
                 newxdir = 0
         elif self.xdir > 0:
-            if colltile2 != " " or colltile4 != " ":
+            if colltile2 == "#" or colltile4 == "#":
                 newxdir = 0
 
 
@@ -95,11 +95,11 @@ class Player(GameObject):
         colltile4 = gamestate.getLevel()[y2][x2]  # lower right
 
         if self.ydir < 0:
-            if colltile1 != " " or colltile2 != " ":
+            if colltile1 == "#" or colltile2 == "#":
                 newydir = 0
 
         elif self.ydir > 0:
-            if colltile3 != " " or colltile4 != " ":
+            if colltile3 == "#" or colltile4 == "#":
                 newydir = 0
 
 

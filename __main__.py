@@ -94,7 +94,7 @@ sound.loadSound('kick', 'snd/kick.wav')
 gamestate = GameState(args.level)
 
 worm   = Worm(math.floor(LEV_W/2),math.floor(LEV_H/2))
-ball   = Ball(math.floor(SCR_W/4),math.floor(SCR_H/2),'o')
+ball   = Ball(gamestate)
 bird   = Bird(0,0,'v')
 
 gamestate.objects[-1] = worm
