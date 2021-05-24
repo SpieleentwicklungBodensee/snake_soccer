@@ -40,15 +40,15 @@ class Player(GameObject):
         ballCenterX = ball.x + ball.width/2
         ballCenterY = ball.y + ball.height/2
         playerCenterX = self.x + TILE_W/2
-        playerCenterY = self.y + TILE_H
+        playerCenterY = self.y + TILE_H - 3
         diffX = ballCenterX - playerCenterX
-        diffY = ballCenterY - playerCenterY + 2
+        diffY = ballCenterY - playerCenterY
         distance = math.sqrt(pow(diffX, 2) + pow(diffY, 2))
-        if distance < 16 and distance > 0:
-            speed = 4
-            diffX /= distance
-            diffY /= distance
-            ball.kick(diffX * speed, diffY * speed)
+        if distance < 16 and distance > 0 and ball.z < 8:
+            diffX /= distance # normalise
+            diffY /= distance # normalise
+            speed = 20
+            ball.kick(diffX * speed, diffY * speed, speed)
 
 
     def update(self, gamestate):

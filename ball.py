@@ -42,12 +42,12 @@ class Ball(GameObject):
 
         return gamestate.getLevel()[tileY][tileX]
 
-    def kick(self, xdir, ydir):
+    def kick(self, xdir, ydir, zdir):
 
-        if self.z<8:
-            self.xdir=xdir*5
-            self.ydir=ydir*5
-            self.zdir=20
+            self.xdir=xdir
+            self.ydir=ydir
+            self.zdir=zdir
+
             playSound('kick')
 
     def update(self, gamestate):
