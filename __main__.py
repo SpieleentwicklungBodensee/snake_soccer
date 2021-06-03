@@ -23,6 +23,7 @@ ownId = -1    # -1 = worm, -2 = ball, rest = players
 playerColor = 0
 actions = []
 objects = {}
+spawnpoints = [(3, 3), (3, 18), (3, 6), (3, 15), (3, 9), (3, 12)]
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--connect')
@@ -116,8 +117,10 @@ def createPlayer(objId):
                     return
 
     # create ordinary player
-    newPlayer = Player(TILE_W * 2, TILE_H * 2, playerColor)
+    x, y = spawnpoints[playerColor]
+    newPlayer = Player(TILE_W * x, TILE_H * y, playerColor)
     playerColor += 1
+    playerColor %= 6
     gamestate.objects[objId] = newPlayer
     print('created player with id=', objId)
 
@@ -283,7 +286,14 @@ def update():
 
 
 def init():
-    global gamestate
+    global gamestate, spawnpoints
+
+    # scan player spawnpoints
+    for y in range(LEV_H):
+        for x in range(LEV_W):
+            if gamestate.getLevel()[y][x] in ['1', '2', '3', '4', '5', '6']:
+                idx = int(gamestate.getLevel()[y][x]) - 1
+                spawnpoints[idx] = (x, y)
 
     worm   = Worm(math.floor(LEV_W/2),math.floor(LEV_H/2))
     ball   = Ball(gamestate)
