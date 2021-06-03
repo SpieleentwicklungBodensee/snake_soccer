@@ -88,6 +88,10 @@ class Player(GameObject):
 
         speedmod = 0.5 if self.kick_mode else 1
 
+        if REDUCE_DIAGONAL_SPEED:
+            if self.xdir != 0 and self.ydir != 0:
+                speedmod *= 0.75
+
         newxdir = self.xdir * self.speed * speedmod
         newydir = self.ydir * self.speed * speedmod
 

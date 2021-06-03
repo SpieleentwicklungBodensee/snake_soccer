@@ -23,6 +23,8 @@ FULLSCREEN = False
 DEBUG_MODE = False
 JOY_DEADZONE = 0.4
 
+REDUCE_DIAGONAL_SPEED = True
+
 KEYS_LEFT = [pygame.K_LEFT, pygame.K_a]
 KEYS_RIGHT = [pygame.K_RIGHT, pygame.K_d]
 KEYS_UP = [pygame.K_UP, pygame.K_w]
