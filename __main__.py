@@ -140,7 +140,7 @@ def controls():
                 actions.append(('move-down', ownId))
 
             if e.key in KEYS_FIRE:
-                actions.append(('fire', ownId))
+                actions.append(('fire-press', ownId))
 
             if e.key == pygame.K_RETURN:
                 mods = pygame.key.get_mods()
@@ -156,6 +156,9 @@ def controls():
                 actions.append(('stop-up', ownId))
             if e.key in KEYS_DOWN:
                 actions.append(('stop-down', ownId))
+
+            if e.key in KEYS_FIRE:
+                actions.append(('fire-release', ownId))
 
             if e.key == pygame.K_F11:
                 global FPS
@@ -226,12 +229,12 @@ def render():
     # render objects: background
     for obj in gamestate.objects.values():
         if type(obj) is not Ball and type(obj) is not Bird:
-            obj.draw(screen, tiles)
+            obj.draw(screen, tiles, gamestate)
 
     # render objects: foreground
-    gamestate.getBall().draw(screen, tiles)
+    gamestate.getBall().draw(screen, tiles, gamestate)
     for obj in gamestate.getBirds():
-        obj.draw(screen, tiles)
+        obj.draw(screen, tiles, gamestate)
 
 def update():
     global actions, gamestate, ownPlayer
@@ -270,8 +273,10 @@ def update():
             obj.stopUp()
         elif action == 'stop-down':
             obj.stopDown()
-        elif action == 'fire':
+        elif action == 'fire-press':
             obj.interact(gamestate)
+        elif action == 'fire-release':
+            obj.interact(gamestate, release=True)
 
     actions = []
 
