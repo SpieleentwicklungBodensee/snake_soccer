@@ -1,3 +1,4 @@
+import random
 import pygame
 import math
 
@@ -44,12 +45,15 @@ class Ball(GameObject):
         self.ydir=0
         self.zdir=0
 
-        # find and use first 'o' in level
+        # find and use random 'o' in level
+        spawnPoints=[]
         for y in range(LEV_H):
             for x in range(LEV_W):
                 if gamestate.getLevel()[y][x]=='o':
-                    self.x=x*8+2
-                    self.y=y*8+2
+                    spawnPoints.append([x*8+2,y*8+2])
+        spawnPoint=random.choice(spawnPoints)
+        self.x=spawnPoint[0]
+        self.y=spawnPoint[1]
 
     def __getLevelTile(self, gamestate): # at current x y
 
