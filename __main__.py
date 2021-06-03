@@ -86,6 +86,7 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
          '50': pygame.image.load('gfx/player5.png'),
          '51': pygame.image.load('gfx/player5-walk1.png'),
          '52': pygame.image.load('gfx/player5-walk2.png'),
+         'ea': pygame.image.load('gfx/player-eaten.png'),
          }
 
 
