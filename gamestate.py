@@ -15,9 +15,8 @@ class GameState():
         wormsList = {}
 
         for currentObject in self.objects:
-            #type(gamestate.objects[game_object_id])
             if type(currentObject) == Worm:
-                wormsList.insert(currentObject)
+                wormsList.append(currentObject)
 
         return wormsList
 
