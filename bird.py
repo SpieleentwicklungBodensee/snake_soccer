@@ -63,7 +63,7 @@ class Bird(GameObject):
     def get_eaten(self):
         pass
 
-    def draw(self,screen,tiles,gamestate):
+    def drawShadow(self,screen,tiles):
 
         shadowColor = (0,96,0)
 
@@ -81,10 +81,11 @@ class Bird(GameObject):
             #shadowShrinkageY=shadowShrinkageYMax
         #pygame.draw.rect(screen,shadowColor,pygame.Rect(self.x+shadowShrinkageX,self.y+1+shadowShrinkageY,self.width-2*shadowShrinkageX,self.height-2*shadowShrinkageY))
 
+    def draw(self,screen,tiles,gamestate):
+
         # bounding box at z=0
         if DEBUG_MODE:
             pygame.draw.rect(screen,(255,0,0),pygame.Rect(self.x,self.y,self.width,self.height))
-
 
         # ball sprite
         screen.blit(tiles[self.tile],(self.x,self.y-self.z))
