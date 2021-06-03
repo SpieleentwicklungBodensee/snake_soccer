@@ -33,7 +33,7 @@ class Bird(GameObject):
             hit = True
 
         if hit:
-            self.xdir = -self.ydir
+            self.xdir = -self.xdir
             self.x = oldX
 
         # move y
