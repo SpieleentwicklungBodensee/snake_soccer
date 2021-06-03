@@ -27,6 +27,13 @@ class Ball(GameObject):
         #self.zdir=0    # set by respawn(), velocity in pixels per frame
         self.respawn(gamestate)
 
+    def stop(self):
+
+        self.z=0
+        self.xdir=0
+        self.ydir=0
+        self.zdir=0
+
     def respawn(self, gamestate):
 
         # default

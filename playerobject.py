@@ -41,6 +41,8 @@ class Player(GameObject):
     def interact(self, gamestate, release=False):
         if not release:
             self.kick_mode = True
+            if gamestate.getBall().z < 8:
+                gamestate.getBall().stop()
         else:
             if self.kick_mode:
                 self.kick_mode = False
