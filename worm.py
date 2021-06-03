@@ -35,6 +35,9 @@ class Worm(gameobjects.GameObject):
         self.steps_till_addition = 1
         self.step_counter = 0
 
+        self.facedir=LEFT
+        self.facedir_old=LEFT
+
         self.move_dir=[0,0]
 
         self.debugList =[]
@@ -74,6 +77,8 @@ class Worm(gameobjects.GameObject):
 
         #when we should move
         if self.last_move_time +self.move_time< time() :
+
+            self.facedir_old=self.facedir
 
             self.xdir = self._MOVEMENTS[self.facedir][0]
             self.ydir = self._MOVEMENTS[self.facedir][1]
@@ -230,17 +235,17 @@ class Worm(gameobjects.GameObject):
 
     def moveLeft(self):
 
-        if self.facedir != RIGHT:
+        if self.facedir_old != RIGHT:
             self.facedir =LEFT
 
     def moveRight(self):
-        if self.facedir!=LEFT:
+        if self.facedir_old != LEFT:
             self.facedir =RIGHT
 
     def moveUp(self):
-        if self.facedir!=DOWN:
+        if self.facedir_old != DOWN:
             self.facedir = UP
 
     def moveDown(self):
-        if self.facedir!=UP:
+        if self.facedir_old != UP:
             self.facedir = DOWN
