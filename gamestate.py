@@ -8,6 +8,7 @@ class GameState():
         self.objects = {}
         self.levelname = levelname
         self.points = 0
+        self.soundQueue = set()
 
     def getLevel(self):
         return levels.levels[self.levelname]
