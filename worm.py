@@ -29,10 +29,8 @@ class Worm(gameobjects.GameObject):
 
         #worm move timer
         self.last_move_time= 0
-        self.move_time     = 0.2
 
         #worm body addition timer
-        self.steps_till_addition = 1
         self.step_counter = 0
 
         self.facedir=LEFT
@@ -57,7 +55,7 @@ class Worm(gameobjects.GameObject):
         self.time_of_death   = 0
         self.time_to_respawn = 1.5
 
-        self.grow_counter = 8
+        self.grow_counter = WORM_INITIAL_GROW
 
 
     def getSprite(self,sprite,tiles):
@@ -76,7 +74,7 @@ class Worm(gameobjects.GameObject):
 
 
         #when we should move
-        if self.last_move_time +self.move_time< time() :
+        if self.last_move_time + WORM_MOVE_TIME < time() :
 
             self.facedir_old=self.facedir
 
@@ -127,7 +125,7 @@ class Worm(gameobjects.GameObject):
 
 
                 #add a body part
-                if self.step_counter >= self.steps_till_addition:
+                if self.step_counter >= WORM_STEPS_TIL_ADDITION:
                     if self.grow_counter > 0:
                         self.step_counter = 0
                         self.body.insert(0,[*self.head])
@@ -148,9 +146,9 @@ class Worm(gameobjects.GameObject):
                     if self.collide_head(game_object):
                         if type(game_object) is Player:
                             print("collided with player ~")
-                            game_object.get_eaten()
-                            if len(self.body) > 6:
-                                self.body = self.body[:len(self.body)-4]
+                            #game_object.get_eaten()
+                            #if len(self.body) > 6:
+                            #    self.body = self.body[:len(self.body)-4]
                         elif type(game_object) is Ball:
                             print("collided with ball ~")
                             #game_object.get_eaten()
@@ -167,7 +165,7 @@ class Worm(gameobjects.GameObject):
         self.state="ALIVE"
         self.facedir =LEFT
 
-        self.grow_counter = 8
+        self.grow_counter = WORM_INITIAL_GROW
 
     def _gen_collide(self,obj_a,obj_b):
         if obj_a[0] < obj_b.x + obj_b.width and \
