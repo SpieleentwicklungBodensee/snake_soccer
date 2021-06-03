@@ -201,6 +201,7 @@ class Network:
         self.recvPacket = None
         self.sendActions = []
         self.recvActions = []
+        self.disconnects = []
 
         if self.host:
             self.thread = threading.Thread(target = self.runServer)
@@ -231,12 +232,14 @@ class Network:
                     print('drop client')
                     with self.lock:
                         del self.clients[c]
+                        self.disconnects.append(('client-disconnect', c))
                     continue
 
                 with self.lock:
                     if not data:
                         print('disconnect client')
                         del self.clients[c]
+                        self.disconnects.append(('client-disconnect', c))
                     else:
                         self.clients[c].push(data)
 
@@ -290,13 +293,16 @@ class Network:
                     except BlockingIOError:
                         pass
 
-                for a in self.clients.values():
+                actions += self.disconnects
+                self.disconnects = []
+
+                for c, a in self.clients.items():
                     while True:
                         packet = a.pull()
                         if packet is None:
                             break
 
-                        actions += packet
+                        actions += [('client-actions', c)] + packet
 
             return gameState, actions
         else:
