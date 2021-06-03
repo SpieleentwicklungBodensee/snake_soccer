@@ -24,6 +24,7 @@ DEBUG_MODE = False
 JOY_DEADZONE = 0.4
 
 REDUCE_DIAGONAL_SPEED = True
+VARIABLE_KICK_POWER = True
 
 KEYS_LEFT = [pygame.K_LEFT, pygame.K_a]
 KEYS_RIGHT = [pygame.K_RIGHT, pygame.K_d]

@@ -57,7 +57,8 @@ class Player(GameObject):
             if self.kick_angle != (0, 0):
                 ball = gamestate.getBall()
                 speed = 30
-                ball.kick(self.kick_angle[0] * speed, self.kick_angle[1] * speed, speed)
+                kickheight = (abs(self.kick_angle[0]) + abs(self.kick_angle[1])) * speed
+                ball.kick(self.kick_angle[0] * speed, self.kick_angle[1] * speed, kickheight)
 
                 self.kick_angle = (0, 0)
 
@@ -72,8 +73,12 @@ class Player(GameObject):
         diffY = ballCenterY - playerCenterY
         distance = math.sqrt(pow(diffX, 2) + pow(diffY, 2))
         if distance < 16 and distance > 0 and ball.z < 8:
-            diffX /= distance # normalise
-            diffY /= distance # normalise
+            if VARIABLE_KICK_POWER:
+                diffX /= 16
+                diffY /= 16
+            else:
+                diffX /= distance # normalise
+                diffY /= distance # normalise
 
             self.kick_angle = (diffX, diffY)
         else:
@@ -187,5 +192,6 @@ class Player(GameObject):
 
         if self.kick_angle != (0, 0):
             ball = gamestate.getBall()
+            linesize = 16 if VARIABLE_KICK_POWER else 8
             pygame.draw.line(screen, (0, 64, 0), (ball.x + ball.width/2, ball.y + ball.height/2),
-                            (ball.x + ball.width/2 + self.kick_angle[0] * 8, ball.y + ball.height/2 + self.kick_angle[1] * 8))
+                            (ball.x + ball.width/2 + self.kick_angle[0] * linesize, ball.y + ball.height/2 + self.kick_angle[1] * linesize))
