@@ -204,13 +204,14 @@ def controls():
 
 def render():
     screen.fill((0, 128, 0))
-    font.drawText(screen, 'SNAKE SOCCER!', 2, 2, fgcolor=(255,255,255))#, bgcolor=(0,0,0))
+    if tick < 180:
+        font.drawText(screen, 'SNAKE SOCCER!', 2, 2, fgcolor=(255,255,255))#, bgcolor=(0,0,0))
 
     seconds = int(tick / 60)
     minutes = int(seconds / 60)
     matchtime = '%02i:%02i' % (minutes, seconds % 60)
 
-    font.drawText(screen, 'Pts: ' + str(gamestate.points), 31, 2, fgcolor=(255,255,255))
+    font.drawText(screen, 'PTS: %02i'% gamestate.points, 32, 1, fgcolor=(255,255,255))
     font.drawText(screen, matchtime, 34, 20, fgcolor=(255,255,255))
 
     # render level
