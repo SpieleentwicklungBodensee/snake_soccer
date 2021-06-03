@@ -1,3 +1,5 @@
+import pygame
+
 SCR_W = 320
 SCR_H = 180
 
@@ -20,3 +22,9 @@ DOWN = 3
 FULLSCREEN = False
 DEBUG_MODE = False
 JOY_DEADZONE = 0.4
+
+KEYS_LEFT = [pygame.K_LEFT, pygame.K_a]
+KEYS_RIGHT = [pygame.K_RIGHT, pygame.K_d]
+KEYS_UP = [pygame.K_UP, pygame.K_w]
+KEYS_DOWN = [pygame.K_DOWN, pygame.K_s]
+KEYS_FIRE = [pygame.K_LCTRL, pygame.K_SPACE]
