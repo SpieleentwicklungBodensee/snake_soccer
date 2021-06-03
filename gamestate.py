@@ -12,12 +12,10 @@ class GameState():
         return levels.levels[self.levelname]
 
     def getWorms(self):
-        wormsList = {}
-
-        for currentObject in self.objects:
+        wormsList = []
+        for currentObject in self.objects.values():
             if type(currentObject) == Worm:
                 wormsList.append(currentObject)
-
         return wormsList
 
     def getBall(self):
