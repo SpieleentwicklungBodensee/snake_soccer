@@ -2,5 +2,6 @@ __pycache__/
 .idea/
 start.bat
 *.so
+*.pyd
 build/
 *.c
