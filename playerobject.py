@@ -174,10 +174,12 @@ class Player(GameObject):
         self.x = newx
         self.y = newy
 
+        self.status = 'ALIVE'
         for currentWorm in gamestate.getWorms():
             if currentWorm._collides_body(self):
                 self.x = self.old_x
                 self.y = self.old_y
+                self.status = 'EATEN'
 
         # update kick angle
         if self.kick_mode:
@@ -188,7 +190,10 @@ class Player(GameObject):
         if self.status == "DEAD":
             return
 
-        screen.blit(tiles[self.tile + str(self.anim)], (self.x, self.y - TILE_H))
+        if self.status == "EATEN":
+            screen.blit(tiles['ea'], (self.x, self.y - TILE_H))
+        else:
+            screen.blit(tiles[self.tile + str(self.anim)], (self.x, self.y - TILE_H))
 
         if self.kick_mode and self.kick_angle != (0, 0):
             ball = gamestate.getBall()
