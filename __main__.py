@@ -135,7 +135,7 @@ def controls():
             if e.key == pygame.K_DOWN:
                 actions.append(('move-down', ownId))
 
-            if e.key == pygame.K_LCTRL:
+            if e.key == pygame.K_SPACE or e.key == pygame.K_LCTRL:
                 actions.append(('fire', ownId))
 
             if e.key == pygame.K_RETURN:
