@@ -174,12 +174,17 @@ class Player(GameObject):
         self.x = newx
         self.y = newy
 
-        self.status = 'ALIVE'
         for currentWorm in gamestate.getWorms():
             if currentWorm._collides_body(self):
                 self.x = self.old_x
                 self.y = self.old_y
+
+        # check again for EATEN status
+        self.status = 'ALIVE'
+        for currentWorm in gamestate.getWorms():
+            if currentWorm._collides_body(self):
                 self.status = 'EATEN'
+
 
         # update kick angle
         if self.kick_mode:
