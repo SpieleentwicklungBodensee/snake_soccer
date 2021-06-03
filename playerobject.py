@@ -25,8 +25,8 @@ class Player(GameObject):
 
 
     def respawn(self):
-        self.x =TILE_W * 2
-        self.y =TILE_H * 2
+        self.x = self.spawnx
+        self.y = self.spawny
         self.status = "ALIVE"
 
         self.tick = 0

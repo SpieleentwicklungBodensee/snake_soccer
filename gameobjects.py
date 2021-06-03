@@ -6,6 +6,9 @@ class GameObject(object):
         self.y = y
         self.tile = tile
 
+        self.spawnx = x
+        self.spawny = y
+
         self.xdir = 0
         self.ydir = 0
         self.facedir = LEFT
