@@ -190,7 +190,7 @@ class Player(GameObject):
 
         screen.blit(tiles[self.tile + str(self.anim)], (self.x, self.y - TILE_H))
 
-        if self.kick_angle != (0, 0):
+        if self.kick_mode and self.kick_angle != (0, 0):
             ball = gamestate.getBall()
             linesize = 16 if VARIABLE_KICK_POWER else 8
             pygame.draw.line(screen, (0, 64, 0), (ball.x + ball.width/2, ball.y + ball.height/2),
