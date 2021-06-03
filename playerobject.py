@@ -35,7 +35,7 @@ class Player(GameObject):
 
 
     def interact(self, gamestate):
-        ball = gamestate.objects[-2]
+        ball = gamestate.getBall()
 
         ballCenterX = ball.x + ball.width/2
         ballCenterY = ball.y + ball.height/2
@@ -102,10 +102,10 @@ class Player(GameObject):
             if colltile3 == "#" or colltile4 == "#":
                 newydir = 0
 
-
-        if gamestate.objects[-1]._collides_body(self):
-            newxdir = 0
-            newydir = 0
+        for currentWorm in gamestate.getWorms():
+            if currentWorm._collides_body(self):
+                newxdir = 0
+                newydir = 0
 
 
         newx = self.x + newxdir
