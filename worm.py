@@ -153,7 +153,7 @@ class Worm(gameobjects.GameObject):
 
 
     def _respawn(self):
-        self.head = [math.floor(LEV_W / 2), math.floor(LEV_H / 2)]
+        self.head = [self.spawnx, self.spawny]
         self.x = self.head[0]
         self.y = self.head[1]
 

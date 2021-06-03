@@ -37,8 +37,8 @@ class Ball(GameObject):
     def respawn(self, gamestate):
 
         # default
-        self.x=math.floor(SCR_W/4)
-        self.y=math.floor(SCR_H/2)
+        self.x=self.spawnx
+        self.y=self.spawny
         self.z=8
         self.xdir=0
         self.ydir=0
