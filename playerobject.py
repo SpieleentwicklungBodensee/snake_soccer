@@ -32,6 +32,7 @@ class Player(GameObject):
         self.tick = 0
         self.anim = 0
         self.is_walking=True
+        self.kick_mode = False
 
     def get_eaten(self):
         self.status = "DEAD"
@@ -39,6 +40,9 @@ class Player(GameObject):
 
 
     def interact(self, gamestate, release=False):
+        if self.status == 'DEAD':
+            return
+
         if not release:
             self.kick_mode = True
 
