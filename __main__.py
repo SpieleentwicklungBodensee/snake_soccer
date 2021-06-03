@@ -248,8 +248,20 @@ def update():
             obj.update(gamestate)
 
     if net is not None:
+        # as a host, put all played sounds into the queue
+        if net.isHost():
+            for soundname in sound.popHistory():
+                gamestate.soundQueue.add(soundname)
+
+        # sync gamestate over network
         gamestate, actions = net.update(gamestate, actions)
         ownPlayer = gamestate.objects.get(ownId)
+
+        # retrieve sounds to be played as a client
+        if not net.isHost():
+            for soundname in gamestate.soundQueue:
+                sound.playSound(soundname)
+        gamestate.soundQueue = set()
 
     for action, objId in actions:
         if action == 'create-player':
