@@ -140,7 +140,7 @@ def controls():
                 actions.append(('move-down', ownId))
 
             if e.key in KEYS_FIRE:
-                actions.append(('fire', ownId))
+                actions.append(('fire-press', ownId))
 
             if e.key == pygame.K_RETURN:
                 mods = pygame.key.get_mods()
@@ -156,6 +156,9 @@ def controls():
                 actions.append(('stop-up', ownId))
             if e.key in KEYS_DOWN:
                 actions.append(('stop-down', ownId))
+
+            if e.key in KEYS_FIRE:
+                actions.append(('fire-release', ownId))
 
             if e.key == pygame.K_F11:
                 global FPS
@@ -220,7 +223,7 @@ def render():
 
     # render players
     for obj in gamestate.objects.values():
-        obj.draw(screen, tiles)
+        obj.draw(screen, tiles, gamestate)
 
 def update():
     global actions, gamestate, ownPlayer
@@ -259,8 +262,10 @@ def update():
             obj.stopUp()
         elif action == 'stop-down':
             obj.stopDown()
-        elif action == 'fire':
+        elif action == 'fire-press':
             obj.interact(gamestate)
+        elif action == 'fire-release':
+            obj.interact(gamestate, release=True)
 
     actions = []
 

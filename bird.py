@@ -63,7 +63,7 @@ class Bird(GameObject):
     def get_eaten(self):
         pass
 
-    def draw(self,screen,tiles):
+    def draw(self,screen,tiles,gamestate):
 
         shadowColor = (0,96,0)
 

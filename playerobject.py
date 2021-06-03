@@ -20,6 +20,8 @@ class Player(GameObject):
         self.old_x = 0
         self.old_y = 0;
 
+        self.kick_mode = False
+        self.kick_angle = (0, 0)
 
 
     def respawn(self):
@@ -36,7 +38,21 @@ class Player(GameObject):
         self.death_time = time()
 
 
-    def interact(self, gamestate):
+    def interact(self, gamestate, release=False):
+        if not release:
+            self.kick_mode = True
+        else:
+            if self.kick_mode:
+                self.kick_mode = False
+
+            if self.kick_angle != (0, 0):
+                ball = gamestate.getBall()
+                speed = 30
+                ball.kick(self.kick_angle[0] * speed, self.kick_angle[1] * speed, speed)
+
+                self.kick_angle = (0, 0)
+
+    def calcKickAngle(self, gamestate):
         ball = gamestate.getBall()
 
         ballCenterX = ball.x + ball.width/2
@@ -49,8 +65,10 @@ class Player(GameObject):
         if distance < 16 and distance > 0 and ball.z < 8:
             diffX /= distance # normalise
             diffY /= distance # normalise
-            speed = 30
-            ball.kick(diffX * speed, diffY * speed, speed)
+
+            self.kick_angle = (diffX, diffY)
+        else:
+            self.kick_angle = (0, 0)
 
 
     def update(self, gamestate):
@@ -59,8 +77,10 @@ class Player(GameObject):
             if self.death_time+ self.time_to_alive < time():
                 self.respawn()
 
-        newxdir = self.xdir * self.speed
-        newydir = self.ydir * self.speed
+        speedmod = 0.5 if self.kick_mode else 1
+
+        newxdir = self.xdir * self.speed * speedmod
+        newydir = self.ydir * self.speed * speedmod
 
         self.old_x = self.x
         self.old_y = self.y
@@ -141,9 +161,18 @@ class Player(GameObject):
                 self.x = self.old_x
                 self.y = self.old_y
 
-    def draw(self, screen, tiles):
+        # update kick angle
+        if self.kick_mode:
+            self.calcKickAngle(gamestate)
+
+    def draw(self, screen, tiles, gamestate):
 
         if self.status == "DEAD":
             return
 
         screen.blit(tiles[self.tile + str(self.anim)], (self.x, self.y - TILE_H))
+
+        if self.kick_angle != (0, 0):
+            ball = gamestate.getBall()
+            pygame.draw.line(screen, (0, 64, 0), (ball.x + ball.width/2, ball.y + ball.height/2),
+                            (ball.x + ball.width/2 + self.kick_angle[0] * 8, ball.y + ball.height/2 + self.kick_angle[1] * 8))

@@ -212,7 +212,7 @@ class Worm(gameobjects.GameObject):
         return False
 
 
-    def draw(self,screen,tiles):
+    def draw(self,screen,tiles,gamestate):
         #self.getSprite("H",tiles)
         #draw the head
 

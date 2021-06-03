@@ -141,7 +141,7 @@ class Ball(GameObject):
             if worm.collide_head(self):
                 self.respawn(gamestate)
 
-    def draw(self, screen, tiles):
+    def draw(self, screen, tiles, gamestate):
 
         ## shadow: simple
         #if self.z<BALL__WALL_HEIGHT:
