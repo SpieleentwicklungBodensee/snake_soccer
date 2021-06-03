@@ -10,8 +10,8 @@ class Bird(GameObject):
         self.WALL_HEIGHT = 12
         super().__init__(x, y, tile)
         #self.tile = tile
-        self.width = 2
-        self.height = 5
+        self.width = 6
+        self.height = 2
         #self.x = x
         #self.y = y
         self.z = 0
@@ -68,18 +68,18 @@ class Bird(GameObject):
         shadowColor = (0,96,0)
 
         # shadow: simple
-        #pygame.draw.rect(screen,shadowColor,pygame.Rect(self.x,self.y,self.width,self.height))
+        pygame.draw.rect(screen,shadowColor,pygame.Rect(self.x+1,self.y+12,self.width,self.height))
 
         # shadow: size-changing
-        shadowShrinkageX=self.z/32
-        shadowShrinkageXMax=self.width/2
-        if shadowShrinkageX > shadowShrinkageXMax:
-            shadowShrinkageX=shadowShrinkageXMax
-        shadowShrinkageY=self.z/16
-        shadowShrinkageYMax=self.height/2
-        if shadowShrinkageY > shadowShrinkageYMax:
-            shadowShrinkageY=shadowShrinkageYMax
-        pygame.draw.rect(screen,shadowColor,pygame.Rect(self.x+shadowShrinkageX,self.y+1+shadowShrinkageY,self.width-2*shadowShrinkageX,self.height-2*shadowShrinkageY))
+        #shadowShrinkageX=self.z/32
+        #shadowShrinkageXMax=self.width/2
+        #if shadowShrinkageX > shadowShrinkageXMax:
+            #shadowShrinkageX=shadowShrinkageXMax
+        #shadowShrinkageY=self.z/16
+        #shadowShrinkageYMax=self.height/2
+        #if shadowShrinkageY > shadowShrinkageYMax:
+            #shadowShrinkageY=shadowShrinkageYMax
+        #pygame.draw.rect(screen,shadowColor,pygame.Rect(self.x+shadowShrinkageX,self.y+1+shadowShrinkageY,self.width-2*shadowShrinkageX,self.height-2*shadowShrinkageY))
 
         # bounding box at z=0
         if DEBUG_MODE:
@@ -87,4 +87,4 @@ class Bird(GameObject):
 
 
         # ball sprite
-        screen.blit(tiles[self.tile],(self.x-1,self.y-3-self.z))
+        screen.blit(tiles[self.tile],(self.x,self.y-self.z))
