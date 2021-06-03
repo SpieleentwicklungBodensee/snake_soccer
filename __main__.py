@@ -28,6 +28,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--connect')
 parser.add_argument('--port', type=int, default=2000)
 parser.add_argument('--host', action='store_true')
+parser.add_argument('--nosnake', action='store_true')
 parser.add_argument('--level', type=str, default='LEV1')
 args = parser.parse_args()
 
@@ -93,15 +94,6 @@ sound.loadSound('kick', 'snd/kick.wav')
 
 gamestate = GameState(args.level)
 
-worm   = Worm(math.floor(LEV_W/2),math.floor(LEV_H/2))
-ball   = Ball(gamestate)
-bird   = Bird(0,0,'v')
-
-gamestate.objects[-1] = worm
-gamestate.objects[-2] = ball
-gamestate.objects[-3] = bird
-
-
 def toggleFullscreen():
     global FULLSCREEN, window
     FULLSCREEN = not FULLSCREEN
@@ -112,6 +104,18 @@ def toggleFullscreen():
 
 def createPlayer(objId):
     global playerColor, gamestate
+
+    # create worm for first joined player if host doesn't want to be a worm (TODO this is a bit ugly, code-wise)
+    if objId != -1:
+        if net is not None and net.isHost():
+            if args.nosnake:
+                if not gamestate.getWorms():
+                    worm = Worm(math.floor(LEV_W/2),math.floor(LEV_H/2))
+                    gamestate.objects[objId] = worm
+                    print('created worm for player id=', objId)
+                    return
+
+    # create ordinary player
     newPlayer = Player(TILE_W * 2, TILE_H * 2, playerColor)
     playerColor += 1
     gamestate.objects[objId] = newPlayer
@@ -135,7 +139,7 @@ def controls():
             if e.key == pygame.K_DOWN:
                 actions.append(('move-down', ownId))
 
-            if e.key == pygame.K_SPACE or e.key == pygame.K_LCTRL:
+            if e.key == pygame.K_LCTRL:
                 actions.append(('fire', ownId))
 
             if e.key == pygame.K_RETURN:
@@ -199,7 +203,12 @@ def render():
     screen.fill((0, 128, 0))
     font.drawText(screen, 'SNAKE SOCCER!', 2, 2, fgcolor=(255,255,255))#, bgcolor=(0,0,0))
 
+    seconds = int(tick / 60)
+    minutes = int(seconds / 60)
+    matchtime = '%02i:%02i' % (minutes, seconds % 60)
+
     font.drawText(screen, 'Pts: ' + str(gamestate.points), 31, 2, fgcolor=(255,255,255))
+    font.drawText(screen, matchtime, 34, 20, fgcolor=(255,255,255))
 
     # render level
     for y in range(LEV_H):
@@ -255,6 +264,25 @@ def update():
 
     actions = []
 
+
+def init():
+    global gamestate
+
+    worm   = Worm(math.floor(LEV_W/2),math.floor(LEV_H/2))
+    ball   = Ball(gamestate)
+    bird   = Bird(0,0,'v')
+
+    if net is not None and net.isHost():    # if host doesn't want to be a snake, create a normal player instead
+        if not args.nosnake:
+            gamestate.objects[-1] = worm
+        else:
+            createPlayer(-1)
+
+    gamestate.objects[-2] = ball
+    gamestate.objects[-3] = bird
+
+
+init()
 
 tick = 0
 running = True
