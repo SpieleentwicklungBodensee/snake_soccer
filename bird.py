@@ -81,7 +81,7 @@ class Bird(GameObject):
             #shadowShrinkageY=shadowShrinkageYMax
         #pygame.draw.rect(screen,shadowColor,pygame.Rect(self.x+shadowShrinkageX,self.y+1+shadowShrinkageY,self.width-2*shadowShrinkageX,self.height-2*shadowShrinkageY))
 
-    def draw(self,screen,tiles):
+    def draw(self,screen,tiles,gamestate):
 
         # bounding box at z=0
         if DEBUG_MODE:

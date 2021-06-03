@@ -51,10 +51,10 @@ class GameObject(object):
     def update(self, gamestate):
         pass
 
-    def draw(self, screen, tiles):
+    def draw(self, screen, tiles, gamestate):
         pass
 
-    def interact(self, gamestate):
+    def interact(self, gamestate, release=False):
         pass
 
     def collides(self, game_object):
