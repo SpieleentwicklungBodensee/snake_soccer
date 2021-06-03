@@ -17,6 +17,8 @@ class Player(GameObject):
         self.status = "ALIVE"
         self.death_time    =0
         self.time_to_alive = 2
+        self.old_x = 0
+        self.old_y = 0;
 
 
 
@@ -60,6 +62,9 @@ class Player(GameObject):
         newxdir = self.xdir * self.speed
         newydir = self.ydir * self.speed
 
+        self.old_x = self.x
+        self.old_y = self.y
+
         newx = self.x + newxdir
         newy = self.y + newydir
 
@@ -102,12 +107,6 @@ class Player(GameObject):
             if colltile3 == "#" or colltile4 == "#":
                 newydir = 0
 
-        for currentWorm in gamestate.getWorms():
-            if currentWorm._collides_body(self):
-                newxdir = 0
-                newydir = 0
-
-
         newx = self.x + newxdir
         newy = self.y + newydir
 
@@ -136,6 +135,11 @@ class Player(GameObject):
 
         self.x = newx
         self.y = newy
+
+        for currentWorm in gamestate.getWorms():
+            if currentWorm._collides_body(self):
+                self.x = self.old_x
+                self.y = self.old_y
 
     def draw(self, screen, tiles):
 

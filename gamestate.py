@@ -14,7 +14,7 @@ class GameState():
     def getWorms(self):
         wormsList = []
         for currentObject in self.objects.values():
-            if type(currentObject) == Worm:
+            if type(currentObject) is Worm:
                 wormsList.append(currentObject)
         return wormsList
 
