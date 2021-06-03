@@ -136,6 +136,11 @@ class Ball(GameObject):
             self.ydir=-self.ydir
             self.y=oldY
 
+        # collide worms
+        for worm in gamestate.getWorms():
+            if worm.collide_head(self):
+                self.respawn(gamestate)
+
     def draw(self, screen, tiles):
 
         ## shadow: simple
