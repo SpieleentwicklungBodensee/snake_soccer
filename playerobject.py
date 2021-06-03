@@ -49,7 +49,7 @@ class Player(GameObject):
         if distance < 16 and distance > 0 and ball.z < 8:
             diffX /= distance # normalise
             diffY /= distance # normalise
-            speed = 20
+            speed = 30
             ball.kick(diffX * speed, diffY * speed, speed)
 
 
