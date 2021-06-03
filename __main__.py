@@ -23,6 +23,7 @@ ownId = -1    # -1 = worm, -2 = ball, rest = players
 playerColor = 0
 actions = []
 objects = {}
+spawnpoints = [(3, 3), (3, 18), (3, 6), (3, 15), (3, 9), (3, 12)]
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--connect')
@@ -116,8 +117,10 @@ def createPlayer(objId):
                     return
 
     # create ordinary player
-    newPlayer = Player(TILE_W * 2, TILE_H * 2, playerColor)
+    x, y = spawnpoints[playerColor]
+    newPlayer = Player(TILE_W * x, TILE_H * y, playerColor)
     playerColor += 1
+    playerColor %= 6
     gamestate.objects[objId] = newPlayer
     print('created player with id=', objId)
 
@@ -204,13 +207,14 @@ def controls():
 
 def render():
     screen.fill((0, 128, 0))
-    font.drawText(screen, 'SNAKE SOCCER!', 2, 2, fgcolor=(255,255,255))#, bgcolor=(0,0,0))
+    if tick < 180:
+        font.drawText(screen, 'SNAKE SOCCER!', 2, 2, fgcolor=(255,255,255))#, bgcolor=(0,0,0))
 
     seconds = int(tick / 60)
     minutes = int(seconds / 60)
     matchtime = '%02i:%02i' % (minutes, seconds % 60)
 
-    font.drawText(screen, 'Pts: ' + str(gamestate.points), 31, 2, fgcolor=(255,255,255))
+    font.drawText(screen, 'PTS: %02i'% gamestate.points, 32, 1, fgcolor=(255,255,255))
     font.drawText(screen, matchtime, 34, 20, fgcolor=(255,255,255))
 
     # render level
@@ -282,7 +286,14 @@ def update():
 
 
 def init():
-    global gamestate
+    global gamestate, spawnpoints
+
+    # scan player spawnpoints
+    for y in range(LEV_H):
+        for x in range(LEV_W):
+            if gamestate.getLevel()[y][x] in ['1', '2', '3', '4', '5', '6']:
+                idx = int(gamestate.getLevel()[y][x]) - 1
+                spawnpoints[idx] = (x, y)
 
     worm   = Worm(math.floor(LEV_W/2),math.floor(LEV_H/2))
     ball   = Ball(gamestate)
