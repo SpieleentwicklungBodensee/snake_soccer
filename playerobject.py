@@ -41,7 +41,12 @@ class Player(GameObject):
     def interact(self, gamestate, release=False):
         if not release:
             self.kick_mode = True
-        else:
+
+            # stop ball
+            if self.kick_angle != (0, 0) and  gamestate.getBall().z < 8:
+                gamestate.getBall().stop()
+
+        else: # release
             if self.kick_mode:
                 self.kick_mode = False
 
@@ -164,11 +169,6 @@ class Player(GameObject):
         # update kick angle
         if self.kick_mode:
             self.calcKickAngle(gamestate)
-
-            # stop ball
-            if self.kick_angle != (0, 0) and  gamestate.getBall().z < 8:
-                gamestate.getBall().stop()
-
 
     def draw(self, screen, tiles, gamestate):
 
