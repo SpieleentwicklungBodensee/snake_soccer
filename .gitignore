@@ -1,3 +1,6 @@
 __pycache__/
 .idea/
 start.bat
+*.so
+build/
+*.c
