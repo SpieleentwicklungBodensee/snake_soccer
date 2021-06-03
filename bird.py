@@ -6,7 +6,6 @@ class Bird(GameObject):
 
     def __init__(self, x, y, tile):
         self.SPEED_DIV = 8*2
-        self.SPEED_COLLISION_MULT_GROUND = 80 # in %
         self.WALL_HEIGHT = 12
         super().__init__(x, y, tile)
         #self.tile = tile
@@ -34,7 +33,7 @@ class Bird(GameObject):
             hit = True
 
         if hit:
-            self.xdir = -self.ydir
+            self.xdir = -self.xdir
             self.x = oldX
 
         # move y
@@ -70,16 +69,6 @@ class Bird(GameObject):
         # shadow: simple
         pygame.draw.rect(screen,shadowColor,pygame.Rect(self.x+1,self.y+12,self.width,self.height))
 
-        # shadow: size-changing
-        #shadowShrinkageX=self.z/32
-        #shadowShrinkageXMax=self.width/2
-        #if shadowShrinkageX > shadowShrinkageXMax:
-            #shadowShrinkageX=shadowShrinkageXMax
-        #shadowShrinkageY=self.z/16
-        #shadowShrinkageYMax=self.height/2
-        #if shadowShrinkageY > shadowShrinkageYMax:
-            #shadowShrinkageY=shadowShrinkageYMax
-        #pygame.draw.rect(screen,shadowColor,pygame.Rect(self.x+shadowShrinkageX,self.y+1+shadowShrinkageY,self.width-2*shadowShrinkageX,self.height-2*shadowShrinkageY))
 
     def draw(self,screen,tiles,gamestate):
 
