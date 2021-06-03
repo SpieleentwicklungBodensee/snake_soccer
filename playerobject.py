@@ -43,7 +43,7 @@ class Player(GameObject):
             self.kick_mode = True
 
             # stop ball
-            if self.kick_angle != (0, 0) and  gamestate.getBall().z < 8:
+            if gamestate.getBall().z < 8:
                 gamestate.getBall().stop()
 
         else: # release
