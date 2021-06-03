@@ -145,7 +145,7 @@ class Ball(GameObject):
 
         # collide worms
         for worm in gamestate.getWorms():
-            if worm.collide_head(self):
+            if worm.collide_head(self) and self.z<8:
                 self.respawn(gamestate)
 
 
