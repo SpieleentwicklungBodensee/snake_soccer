@@ -141,7 +141,7 @@ class Ball(GameObject):
             if worm.collide_head(self):
                 self.respawn(gamestate)
 
-    def draw(self, screen, tiles):
+    def drawShadow(self, screen, tiles):
 
         ## shadow: simple
         #if self.z<BALL__WALL_HEIGHT:
@@ -158,6 +158,8 @@ class Ball(GameObject):
             if shadowShrinkageY>shadowShrinkageYMax:
                 shadowShrinkageY=shadowShrinkageYMax
             pygame.draw.rect(screen,BALL_SHADOW_COLOR,pygame.Rect(self.x+shadowShrinkageX,self.y+1+shadowShrinkageY,self.width-2*shadowShrinkageX,self.height-2*shadowShrinkageY))
+
+    def draw(self, screen, tiles):
 
         ## above wall indicator
         ## replaced by shadow disappearing

@@ -218,8 +218,19 @@ def render():
             elif gamestate.getLevel()[y][x] == '.':
                 screen.blit(tiles['.'], (x * TILE_W, y * TILE_H))
 
-    # render players
+    # render objects: shadows
+    gamestate.getBall().drawShadow(screen, tiles)
+    for obj in gamestate.getBirds():
+        obj.drawShadow(screen, tiles)
+
+    # render objects: background
     for obj in gamestate.objects.values():
+        if type(obj) is not Ball and type(obj) is not Bird:
+            obj.draw(screen, tiles)
+
+    # render objects: foreground
+    gamestate.getBall().draw(screen, tiles)
+    for obj in gamestate.getBirds():
         obj.draw(screen, tiles)
 
 def update():

@@ -1,6 +1,7 @@
 import levels
 
 from worm import Worm
+from bird import Bird
 
 class GameState():
     def __init__(self, levelname='LEV1'):
@@ -17,6 +18,13 @@ class GameState():
             if type(currentObject) is Worm:
                 wormsList.append(currentObject)
         return wormsList
+
+    def getBirds(self):
+        birdsList = []
+        for currentObject in self.objects.values():
+            if type(currentObject) is Bird:
+                birdsList.append(currentObject)
+        return birdsList
 
     def getBall(self):
         return self.objects[-2]
