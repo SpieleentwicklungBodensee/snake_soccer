@@ -32,6 +32,7 @@ class Player(GameObject):
         self.tick = 0
         self.anim = 0
         self.is_walking=True
+        self.kick_mode = False
 
     def get_eaten(self):
         self.status = "DEAD"
@@ -39,6 +40,9 @@ class Player(GameObject):
 
 
     def interact(self, gamestate, release=False):
+        if self.status == 'DEAD':
+            return
+
         if not release:
             self.kick_mode = True
 
@@ -53,7 +57,8 @@ class Player(GameObject):
             if self.kick_angle != (0, 0):
                 ball = gamestate.getBall()
                 speed = 30
-                ball.kick(self.kick_angle[0] * speed, self.kick_angle[1] * speed, speed)
+                kickheight = (abs(self.kick_angle[0]) + abs(self.kick_angle[1])) * speed
+                ball.kick(self.kick_angle[0] * speed, self.kick_angle[1] * speed, kickheight)
 
                 self.kick_angle = (0, 0)
 
@@ -68,8 +73,12 @@ class Player(GameObject):
         diffY = ballCenterY - playerCenterY
         distance = math.sqrt(pow(diffX, 2) + pow(diffY, 2))
         if distance < 16 and distance > 0 and ball.z < 8:
-            diffX /= distance # normalise
-            diffY /= distance # normalise
+            if VARIABLE_KICK_POWER:
+                diffX /= 16
+                diffY /= 16
+            else:
+                diffX /= distance # normalise
+                diffY /= distance # normalise
 
             self.kick_angle = (diffX, diffY)
         else:
@@ -83,6 +92,10 @@ class Player(GameObject):
                 self.respawn()
 
         speedmod = 0.5 if self.kick_mode else 1
+
+        if REDUCE_DIAGONAL_SPEED:
+            if self.xdir != 0 and self.ydir != 0:
+                speedmod *= 0.75
 
         newxdir = self.xdir * self.speed * speedmod
         newydir = self.ydir * self.speed * speedmod
@@ -166,6 +179,13 @@ class Player(GameObject):
                 self.x = self.old_x
                 self.y = self.old_y
 
+        # check again for EATEN status
+        self.status = 'ALIVE'
+        for currentWorm in gamestate.getWorms():
+            if currentWorm._collides_body(self):
+                self.status = 'EATEN'
+
+
         # update kick angle
         if self.kick_mode:
             self.calcKickAngle(gamestate)
@@ -175,9 +195,13 @@ class Player(GameObject):
         if self.status == "DEAD":
             return
 
-        screen.blit(tiles[self.tile + str(self.anim)], (self.x, self.y - TILE_H))
+        if self.status == "EATEN":
+            screen.blit(tiles['ea'], (self.x, self.y - TILE_H))
+        else:
+            screen.blit(tiles[self.tile + str(self.anim)], (self.x, self.y - TILE_H))
 
-        if self.kick_angle != (0, 0):
+        if self.kick_mode and self.kick_angle != (0, 0):
             ball = gamestate.getBall()
+            linesize = 16 if VARIABLE_KICK_POWER else 8
             pygame.draw.line(screen, (0, 64, 0), (ball.x + ball.width/2, ball.y + ball.height/2),
-                            (ball.x + ball.width/2 + self.kick_angle[0] * 8, ball.y + ball.height/2 + self.kick_angle[1] * 8))
+                            (ball.x + ball.width/2 + self.kick_angle[0] * linesize, ball.y + ball.height/2 + self.kick_angle[1] * linesize))

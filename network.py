@@ -241,6 +241,7 @@ class Network:
         self.recvPacket = None
         self.sendActions = []
         self.recvActions = []
+        self.disconnects = []
 
         if self.host:
             self.thread = threading.Thread(target = self.runServer)
@@ -268,17 +269,20 @@ class Network:
                 try:
                     data = c.recv(4096)
                 except ConnectionResetError:
-                    print('drop client')
                     with self.lock:
-                        del self.clients[c]
+                        self.disconnectClient(c)
                     continue
 
                 with self.lock:
                     if not data:
-                        print('disconnect client')
-                        del self.clients[c]
+                        self.disconnectClient(c)
                     else:
                         self.clients[c].push(data)
+
+    def disconnectClient(self, c):
+        print('disconnect client')
+        del self.clients[c]
+        self.disconnects.append(('client-disconnect', c))
 
     def runClient(self):
         a = PacketAssembler()
@@ -324,19 +328,24 @@ class Network:
         if self.host:
             with self.lock:
                 self.sendPacket = PacketAssembler.createPacket(gameState)
-                for c in self.clients:
+                for c in list(self.clients):
                     try:
                         c.sendall(self.sendPacket)
+                    except BrokenPipeError:
+                        self.disconnectClient(c)
                     except BlockingIOError:
                         pass
 
-                for a in self.clients.values():
+                actions += self.disconnects
+                self.disconnects = []
+
+                for c, a in self.clients.items():
                     while True:
                         packet = a.pull()
                         if packet is None:
                             break
 
-                        actions += packet
+                        actions += [('client-actions', c)] + packet
 
             return gameState, actions
         else:

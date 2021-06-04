@@ -34,6 +34,7 @@ parser.add_argument('--level', type=str, default='LEV1')
 args = parser.parse_args()
 
 net = None
+clients = {}
 if args.connect is not None:
     net = network.connect(args.connect, args.port)
     ownId = int(random.random() * 1000000)
@@ -86,6 +87,7 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
          '50': pygame.image.load('gfx/player5.png'),
          '51': pygame.image.load('gfx/player5-walk1.png'),
          '52': pygame.image.load('gfx/player5-walk2.png'),
+         'ea': pygame.image.load('gfx/player-eaten.png'),
          }
 
 
@@ -123,6 +125,9 @@ def createPlayer(objId):
     playerColor %= 6
     gamestate.objects[objId] = newPlayer
     print('created player with id=', objId)
+
+def removePlayer(objId):
+    del gamestate.objects[objId]
 
 def controls():
     for e in pygame.event.get():
@@ -241,7 +246,7 @@ def render():
         obj.draw(screen, tiles, gamestate)
 
 def update():
-    global actions, gamestate, ownPlayer
+    global actions, gamestate, ownPlayer, clients
 
     if net is None or net.isHost():
         for obj in gamestate.objects.values():
@@ -263,8 +268,18 @@ def update():
                 sound.playSound(soundname)
         gamestate.soundQueue = set()
 
+    clientId = None
     for action, objId in actions:
+        if action == 'client-actions':
+            clientId = objId
+            continue
+        if action == 'client-disconnect':
+            if objId in clients:
+                removePlayer(clients[objId])
+            continue
+
         if action == 'create-player':
+            clients[clientId] = objId
             createPlayer(objId)
             continue
 
