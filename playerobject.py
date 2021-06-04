@@ -16,7 +16,6 @@ class Player(GameObject):
 
         self.status = "ALIVE"
         self.death_time    =0
-        self.time_to_alive = 2
         self.old_x = 0
         self.old_y = 0;
 
@@ -88,7 +87,7 @@ class Player(GameObject):
     def update(self, gamestate):
 
         if self.status == "DEAD":
-            if self.death_time+ self.time_to_alive < time():
+            if self.death_time + PLAYER_RESPAWN_TIME < time():
                 self.respawn()
 
         speedmod = 0.5 if self.kick_mode else 1

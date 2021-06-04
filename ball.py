@@ -1,6 +1,7 @@
 import random
 import pygame
 import math
+from time import time
 
 from globalconst import *
 from gameobjects import *
@@ -55,6 +56,9 @@ class Ball(GameObject):
         self.x=spawnPoint[0]
         self.y=spawnPoint[1]
 
+        self.state = "ALIVE"
+        playSound('whistle')
+
     def __getLevelTile(self, gamestate): # at current x y
 
         tileX=round(self.x/TILE_W)
@@ -81,6 +85,17 @@ class Ball(GameObject):
 
     def update(self, gamestate):
 
+        if self.state == "DEAD":
+            if self.time_of_death + BALL_RESPAWN_TIME < time():
+                self.respawn(gamestate)
+            else:
+                return
+        if self.state == "GOAL":
+            if self.time_of_death + BALL_RESPAWN_TIME_AFTER_GOAL < time():
+                self.respawn(gamestate)
+            else:
+                return
+
         # move z
         oldZ=self.z
         self.zdir-=1 # gravity
@@ -97,8 +112,9 @@ class Ball(GameObject):
             if self.z<BALL__WALL_HEIGHT:
                 # goal
                 gamestate.points+=1
-                self.respawn(gamestate)
-                playSound('whistle')
+                self.state = "GOAL"
+                self.time_of_death = time()
+                playSound("applause")
         else: # levelTile!="#"
             if self.z<0:
                 # bounce off ground
@@ -150,10 +166,14 @@ class Ball(GameObject):
         # collide worms
         for worm in gamestate.getWorms():
             if worm.collide_head(self) and self.z<8:
-                self.respawn(gamestate)
+                self.state = "DEAD"
+                self.time_of_death = time()
 
 
     def drawShadow(self, screen, tiles):
+
+        if self.state in ['DEAD', 'GOAL']:
+            return
 
         ## shadow: simple
         #if self.z<BALL__WALL_HEIGHT:
@@ -172,6 +192,9 @@ class Ball(GameObject):
             pygame.draw.rect(screen,BALL_SHADOW_COLOR,pygame.Rect(self.x+shadowShrinkageX,self.y+1+shadowShrinkageY,self.width-2*shadowShrinkageX,self.height-2*shadowShrinkageY))
 
     def draw(self, screen, tiles, gamestate):
+
+        if self.state in ['DEAD', 'GOAL']:
+            return
 
         ## above wall indicator
         ## replaced by shadow disappearing
