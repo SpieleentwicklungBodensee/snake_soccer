@@ -93,6 +93,7 @@ tiles = {'#': pygame.image.load('gfx/wall.png'),
 
 sound.loadSound('whistle', 'snd/trillerpfeife.wav')
 sound.loadSound('kick', 'snd/kick.wav')
+sound.loadSound('applause', 'snd/applause.wav')
 
 
 gamestate = GameState(args.level)

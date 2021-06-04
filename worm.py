@@ -53,7 +53,6 @@ class Worm(gameobjects.GameObject):
         self.state ="ALIVE"  #possibl values here are  ALIVE,RESPAWNING
 
         self.time_of_death   = 0
-        self.time_to_respawn = 1.5
 
         self.grow_counter = WORM_INITIAL_GROW
 
@@ -66,7 +65,7 @@ class Worm(gameobjects.GameObject):
         self.debugList = []
 
         if self.state=="DEAD":
-            if self.time_of_death+self.time_to_respawn< time():
+            if self.time_of_death + WORM_RESPAWN_TIME < time():
                 self._respawn()
             else:
                 return False
