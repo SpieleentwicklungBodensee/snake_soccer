@@ -204,10 +204,10 @@ def controls():
                         actions.append(('stop-down', ownId))
 
         if e.type == pygame.JOYBUTTONDOWN:
-            pass
+            actions.append(('fire-press', ownId))
 
         if e.type == pygame.JOYBUTTONUP:
-            pass
+            actions.append(('fire-release', ownId))
 
     return True
 
